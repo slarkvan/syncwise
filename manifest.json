@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Clean Twitter",
+  "version": "0.9.0",
+  "action": { "default_popup": "index.html" },
+  "permissions": ["storage"],
+  "icons": {
+    "16": "src/assets/16.png",
+    "32": "src/assets/32.png",
+    "48": "src/assets/48.png",
+    "128": "src/assets/128.png"
+  },
+  "content_scripts": [
+    {
+      "js": ["src/content-script/main.ts"],
+      "matches": ["https://twitter.com/*"],
+      "run_at": "document_start"
+    },
+    {
+      "js": ["src/content-script/listenRefreshToken.ts"],
+      "matches": [
+        "https://clean-twitter.rxliuli.com/callback/*",
+        "http://localhost:5173/callback/*"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "host_permissions": ["https://github.com/*", "https://api.github.com/*"],
+  "background": {
+    "service_worker": "src/background.ts"
+  }
+}
