@@ -45,6 +45,13 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    server: {
+      port: 5173,
+      strictPort: true,
+      hmr: {
+        port: 5173,
+      },
+    },
     // resolve: {
     //   alias: {
     //     '@octokit/oauth-app': '@octokit/oauth-app/dist-src/index.js',

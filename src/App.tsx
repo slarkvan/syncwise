@@ -12,8 +12,9 @@ function useConfig(): [Config, (value: Partial<Config>) => Promise<void>] {
 
     useMount(async () => {
         const result = await getConfig()
-        await initI18n()
-        await i18next.changeLanguage(result.language)
+        // TODO: dev mode，会一直 init。暂时关掉
+        // await initI18n()
+        // await i18next.changeLanguage(result.language)
         set(result)
     })
 
@@ -34,11 +35,10 @@ export function App() {
     const handleClick = () => {
         console.log('send message from popup')
         Browser.runtime.sendMessage({ from: 'popup', type: 'SYNC_TWITTER_BOOKMARKS' })
-        // Browser.runtime.sendMessage({ from: 'popup', type: "SYNC_TWITTER_BOOKMARKS" },
-        //   function (response) {
-        //     console.log("Response from background: ", response);
-        //   }
-        // )
+    }
+
+    const handleSync = () => {
+        Browser.runtime.sendMessage({ from: 'popup', type: 'SYNC_TO_PKM' })
     }
 
     return (
@@ -95,6 +95,11 @@ export function App() {
                     )
                 }
             })}
+            <div className='flex items-center space-x-2'>
+                <button onClick={handleSync}>
+                    <label className='font-bold'>Sync To PKM</label>
+                </button>
+            </div>
         </form>
     )
 }

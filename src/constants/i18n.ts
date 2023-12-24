@@ -14,7 +14,8 @@ export function setLanguage(lang: Lang) {
 
 export const langs = langList.filter((it) => (['en-US', 'zh-CN', 'zh-TW', 'ja-JP'] as Lang[]).includes(it.value))
 
-export const initI18n = async () =>
+export const initI18n = async () => {
+    // if (localStorage.getItem('i18nInit') === '1') return;
     await i18next.init({
         lng: (await Browser.storage.sync.get('language')).language,
         fallbackLng: 'en-US',
@@ -27,6 +28,8 @@ export const initI18n = async () =>
         } as Record<Lang, { translation: any }>,
         keySeparator: false,
     })
+    // localStorage.setItem('i18nInit', '1')
+}
 
 type T = TranslateType
 

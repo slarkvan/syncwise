@@ -15,11 +15,17 @@ insertScript()
 Browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     console.log('content JS chrome.runtime.onMessage.addListener:', JSON.stringify(message), typeof message)
     if (message?.from === 'background') {
-        console.log('Received message from popup: ' + message)
-    }
-    if (message?.type === 'SYNC_TWITTER_BOOKMARKS') {
-        console.log('xi:Let us sync twitter bookmarks')
-        syncBookmarks('message')
+        console.log('Received message from background: ' + message)
+
+        if (message?.type === 'SYNC_TWITTER_BOOKMARKS') {
+            console.log('xi:Let us sync twitter bookmarks')
+            syncBookmarks('message')
+        }
+
+        if (message?.type === 'SYNC_TO_PKM') {
+            console.log('xi:Let us SYNC_TO_PKM', message?.from)
+            syncToPKM()
+        }
     }
 })
 
@@ -76,4 +82,8 @@ function syncBookmarks(mode: string) {
     // -api  的 entry 返回不是 22（20+2） 个。
     // 或者 翻到底了
     scrollUntilLastBookmark()
+}
+
+function syncToPKM() {
+    console.log('fn syncToPKM init')
 }

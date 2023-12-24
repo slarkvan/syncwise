@@ -2,7 +2,7 @@ import { AsyncArray } from '@liuli-util/async'
 import { TweetInfo, initIndexeddb } from './initIndexeddb'
 import { get, pick } from 'lodash-es'
 import { blockUser } from './blockUser'
-import {bookmarksStore} from './store'
+import { bookmarksStore } from './store'
 import { TWITTER_BOOKMARKS_XHR_HIJACK } from '../../constants/twitter'
 
 const blockUserIds = new Set<string>()
@@ -151,9 +151,8 @@ export function filterTweets(response: any, isBlock: (tweet: TweetInfo) => boole
     return response
 }
 
-
 function filterEntries(list: any[]) {
-    return list.filter(item => !item.entryId.includes('cursor'));
+    return list.filter((item) => !item.entryId.includes('cursor'))
 }
 
 export async function hijackXHR() {
@@ -166,10 +165,11 @@ export async function hijackXHR() {
 
             if (/https:\/\/twitter.com\/i\/api\/graphql\/.*\/Bookmarks/.test(xhr.responseURL)) {
                 if (xhr.responseType === '' || xhr.responseType === 'text') {
-                   
                     const response = JSON.parse(xhr.responseText)
                     // handleTweetDetail(response)
-                    const entries = filterEntries(response?.data?.bookmark_timeline_v2?.timeline?.instructions?.[0]?.entries ?? [])
+                    const entries = filterEntries(
+                        response?.data?.bookmark_timeline_v2?.timeline?.instructions?.[0]?.entries ?? []
+                    )
                     console.log('Bookmarks entries', entries)
                     bookmarksStore.upsert(entries)
                 }
