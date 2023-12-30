@@ -40,23 +40,22 @@ class LocalStorageStore<T> {
   // 去重更新数据
   private insert(data: T): void {
     const currentData = this.load();
+    let list: any = [];
 
     if (Array.isArray(currentData)) {
       const savedList = currentData.map((item: any) => item.id);
-      const index = (data as any).findIndex((item: any) =>
-        savedList.includes(item.id),
+      list = (data as any).filter(
+        (item: any) => item.id && !savedList.includes(item.id),
       );
 
-      if (index !== -1) {
-        //  不需要更新
-        // currentData[index] = data;
-      } else {
-        // 如果没有找到相同id的项，添加新数据
-        currentData.push(data);
-      }
+      //  不需要更新
+      // currentData[index] = data;
+      // 如果没有找到相同id的项，添加新数据
 
-      this.save(currentData);
+      currentData.push(data);
     }
+    const oldList: any = currentData ?? [];
+    this.save([...oldList, ...list] as any);
   }
 }
 

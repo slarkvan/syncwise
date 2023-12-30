@@ -12,14 +12,35 @@ import {
   MESSAGE_GET_PHASE_SPECIFIC_RAW_DATA,
   MESSAGE_ORIGIN_BACKGROUND,
   MESSAGE_ORIGIN_POPUP,
+  MESSAGE_SYNC_TO_OBSIDIAN,
   MESSAGE_SYNC_TO_PKM,
 } from './constants/twitter';
-import { initDB } from './content-script/utils/db';
 import { DataBlock } from './types/logseq/block';
-import { syncedBookmarksStore } from './content-script/utils/store';
 import { beautifyText } from './parser/twitter/bookmark';
 
 const logseqClient = new LogseqClient();
+
+async function getUnSyncedTwitterBookmarks(): Promise<
+  TweetBookmarkParsedItem[] | undefined
+> {
+  const tabs = await Browser.tabs.query({
+    active: true,
+    currentWindow: true,
+  });
+  const tabId = tabs?.[0]?.id;
+  if (!tabId) {
+    console.log('no active tab');
+    return;
+  }
+  console.log('tabId:', tabId);
+  const result = await sendMessageToContentScript(tabId, {
+    from: MESSAGE_ORIGIN_BACKGROUND,
+    type: MESSAGE_GET_PHASE_SPECIFIC_RAW_DATA,
+  });
+  // 异步获取 DB, 只能得到 true
+  console.log('result:', result);
+  return result?.data ?? [];
+}
 
 // export interface Channel<T extends string> {
 //   name: T;
@@ -132,28 +153,24 @@ Browser.runtime.onMessage.addListener(
       // quickCapture('hello world')
       console.log("will parse storage's data...");
       console.log('get data from content script');
-
-      const tabs = await Browser.tabs.query({
-        active: true,
-        currentWindow: true,
-      });
-      const tabId = tabs?.[0].id;
-      if (!tabId) {
-        console.log('no active tab');
-        return;
-      }
-      const result = await sendMessageToContentScript(tabId, {
-        from: MESSAGE_ORIGIN_BACKGROUND,
-        type: MESSAGE_GET_PHASE_SPECIFIC_RAW_DATA,
-      });
-      // 异步获取 DB, 只能得到 true
-      console.log('result:', result);
-
       // 多种 PKM 适配
-
-      quickCapture(result?.data ?? []);
+      const list = await getUnSyncedTwitterBookmarks();
+      if (Array.isArray(list) && list.length > 0) {
+        quickCapture(list);
+      }
 
       // syncedBookmarksStore.upsert(result.map((x: TweetBookmarkParsedItem) => x.id));
+    }
+
+    // Obsidian
+    if (
+      message?.from === MESSAGE_ORIGIN_POPUP &&
+      message.type === MESSAGE_SYNC_TO_OBSIDIAN
+    ) {
+      const list = await getUnSyncedTwitterBookmarks();
+      console.log('message/sync_to_obsidian', list);
+      if (Array.isArray(list) && list.length > 0) {
+      }
     }
 
     // 收集 twitter bookmarks
@@ -174,6 +191,8 @@ Browser.runtime.onMessage.addListener(
         }
       });
     }
+
+    return true;
   },
 );
 

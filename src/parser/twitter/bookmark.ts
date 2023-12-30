@@ -8,7 +8,7 @@ export function parseBookmarkResponse(
   const screen_name = core?.user_results?.result?.legacy?.screen_name;
   const url = `https://twitter.com/${screen_name}/status/${rest_id}`;
   const id = rest_id;
-  console.log('legacy?.entities?', legacy?.entities);
+  const nickname = core?.user_results?.result?.legacy?.name ?? "no nickname";
 
   // 需要去重，不然正常循环匹配会出错
   const uniqueUrls: any = {};
@@ -25,6 +25,7 @@ export function parseBookmarkResponse(
     id,
     url,
     rest_id,
+    nickname,
     screen_name,
     full_text:
       note_tweet?.note_tweet_results?.result?.text ?? legacy?.full_text,

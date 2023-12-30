@@ -14,6 +14,7 @@ import i18next from 'i18next';
 import {
   MESSAGE_COLLECT_TWEETS_BOOKMARKS,
   MESSAGE_ORIGIN_POPUP,
+  MESSAGE_SYNC_TO_OBSIDIAN,
   MESSAGE_SYNC_TO_PKM,
 } from './constants/twitter';
 
@@ -58,6 +59,13 @@ export function App() {
     Browser.runtime.sendMessage({
       from: MESSAGE_ORIGIN_POPUP,
       type: MESSAGE_COLLECT_TWEETS_BOOKMARKS,
+    });
+  };
+
+  const handleSyncToObsidian = () => {
+    Browser.runtime.sendMessage({
+      from: MESSAGE_ORIGIN_POPUP,
+      type: MESSAGE_SYNC_TO_OBSIDIAN,
     });
   };
 
@@ -123,6 +131,12 @@ export function App() {
       <div className="flex items-center space-x-2">
         <button onClick={handleSync}>
           <label className="font-bold">Sync To PKM</label>
+        </button>
+      </div>
+
+      <div className="flex items-center space-x-2">
+        <button onClick={handleSyncToObsidian}>
+          <label className="font-bold">Sync To Obsidian</label>
         </button>
       </div>
     </form>

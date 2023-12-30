@@ -42,6 +42,7 @@ interface LogSeqRenderVariables {
   title: string;
   url: string;
   screen_name: string;
+  nickname: string;
   rest_id: string;
   full_text: string;
   preferredDateFormat: any;
@@ -54,6 +55,7 @@ export function blockRending(
     title,
     url,
     screen_name,
+    nickname,
     rest_id,
     full_text,
     preferredDateFormat,
@@ -66,7 +68,7 @@ export function blockRending(
   // {% raw %}{{twitter {% endraw %}{{url}}{% raw %}}}{% endraw %}
 
   // TODO: better
-  const template1 = `@{{screen_name}}:{{full_text}}`;
+  const template1 = `[{{nickname}}@{{screen_name}}](https://twitter.com/{{screen_name}}):{{full_text}}`;
 
   const render1 = engine
     .parseAndRenderSync(template1, {
@@ -77,6 +79,7 @@ export function blockRending(
       full_text: logseqEscape(full_text),
       screen_name,
       rest_id,
+      nickname,
 
       time: logseqTimeFormat(time),
       dt: time,

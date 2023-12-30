@@ -13,6 +13,11 @@ export const MESSAGE_GET_PHASE_SPECIFIC_RAW_DATA =
 
 export const MESSAGE_SAVE_DATA_TO_DB = 'message/message_save_data_to_db';
 
+/**
+ * Obsidian
+ */
+export const MESSAGE_SYNC_TO_OBSIDIAN = 'message/sync_to_obsidian';
+
 export const MESSAGE_ORIGIN_POPUP = 'MESSAGE_ORIGIN_POPUP';
 export const MESSAGE_ORIGIN_CONTENT = 'MESSAGE_ORIGIN_CONTENT';
 export const MESSAGE_ORIGIN_BACKGROUND = 'MESSAGE_ORIGIN_BACKGROUND';

@@ -1,0 +1,18 @@
+
+## 指定的 文件 upsert md down
+curl -X 'POST' \
+  'https://127.0.0.1:27124/vault/twitter.md' \
+  -H 'accept: */*' \
+  -H 'Authorization: Bearer d50b821f51fd9c21ab966c4b7f79f3cbc71ccd5342d459da581683c9db4023b8' \
+  -H 'Content-Type: text/markdown' \
+  -d '我的 2024 独立开发计划
+
+1.  基于 [https://t.co/wSCm01XE90](https://t.co/wSCm01XE90) 低代码平台，尝试至少 6 个新的 SaaS 业务方向
+2.  尝试建立私域流量，Twitter 关注目标：5000，微信公众号建立，关注目标：1000
+3.  SaaS 运营目标：营收 > 1000 USD 、用户数 > 5000
+
+#buildinpublic
+![sss](https://twitter.com/ccbikai/status/1740925456030011476)
+
+----------------------------------------------------------------
+'

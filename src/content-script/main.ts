@@ -70,9 +70,10 @@ Browser.runtime.onMessage.addListener(function (
       );
 
       sendResponse({ data: list });
-      syncedBookmarksStore.upsert(
-        list?.map((x: TweetBookmarkParsedItem) => x.id),
-      );
+      // TODO: sync to local storage
+      // syncedBookmarksStore.upsert(
+      //   list?.map((x: TweetBookmarkParsedItem) => x.id),
+      // );
       console.log('content js list:', list);
     }
 
