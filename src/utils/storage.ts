@@ -1,3 +1,3 @@
-import Browser from 'webextension-polyfill'
+import Browser from 'webextension-polyfill';
 
-export const getSyncStorage = () => Browser.storage.sync
+export const getSyncStorage = () => Browser.storage.sync;
