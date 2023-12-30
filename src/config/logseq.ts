@@ -22,8 +22,12 @@ export const getLogseqSyncConfig = async (): Promise<LogseqSyncConfig> => {
     enableClipNoteFloatButton = false,
     clipNoteLocation = 'journal',
     clipNoteCustomPage = '',
-    clipNoteTemplate = `#[[Clip]] [{{title}}]({{url}})
-{{content}}`,
+    // clipNoteTemplate = `{% raw %}{{twitter {% endraw %}{{url}}{% raw %}}}{% endraw %}
+    // collapsed:: true
+    // > {{full_text}}`,
+    clipNoteTemplate = `{{full_text}}
+    collapsed:: true
+    {% raw %}{{twitter {% endraw %}{{url}}{% raw %}}}{% endraw %}`,
   } = await Browser.storage.local.get();
   return {
     version,

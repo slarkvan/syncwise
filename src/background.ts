@@ -14,97 +14,108 @@ import {
   MESSAGE_ORIGIN_POPUP,
   MESSAGE_SYNC_TO_PKM,
 } from './constants/twitter';
+import { initDB } from './content-script/utils/db';
+import { DataBlock } from './types/logseq/block';
+import { syncedBookmarksStore } from './content-script/utils/store';
+import { beautifyText } from './parser/twitter/bookmark';
 
 const logseqClient = new LogseqClient();
 
-export interface Channel<T extends string> {
-  name: T;
-}
+// export interface Channel<T extends string> {
+//   name: T;
+// }
 
-export interface BackgroundChannel extends Channel<'background'> {
-  get(url: string): Promise<any>;
-  createToken(
-    data: CreateTokenWebFlowOptions & {
-      scopes?: string[];
-    },
-  ): Promise<string>;
-  createIssue(tweet: TweetInfo & { link: string }): Promise<void>;
-}
+// export interface BackgroundChannel extends Channel<'background'> {
+//   get(url: string): Promise<any>;
+//   createToken(
+//     data: CreateTokenWebFlowOptions & {
+//       scopes?: string[];
+//     },
+//   ): Promise<string>;
+//   createIssue(tweet: TweetInfo & { link: string }): Promise<void>;
+// }
 
-function backApi(): BackgroundChannel {
-  return {
-    name: 'background',
-    async get(url) {
-      return await (await fetch(url)).json();
-    },
-    async createToken(data) {
-      const auth = await oAuthApp.createToken(data);
-      return auth.authentication.token;
-    },
-    async createIssue(tweet) {
-      const auth = await Browser.storage.local.get([
-        'refreshToken',
-        'accessToken',
-      ]);
-      const octokit = new Octokit({ auth: auth.accessToken });
-      const owner = import.meta.env.VITE_GITHUB_BLOCKLIST_OWNER;
-      const repo = import.meta.env.VITE_GITHUB_BLOCKLIST_REPO;
-      const issues = await octokit.rest.search.issuesAndPullRequests({
-        q: `repo:${owner}/${repo} ${tweet.userId} in:title type:issue`,
-      });
-      if (issues.data.total_count > 0) {
-        console.log('issue is exist');
-        return;
-      }
-      await octokit.rest.issues.create({
-        owner,
-        repo,
-        title: `Block ${tweet.userId} ${tweet.username}`,
-        body:
-          '```json\n' +
-          JSON.stringify(tweet, undefined, 2) +
-          '\n```' +
-          `\n${tweet.link}`,
-      });
-      console.log('issue created');
-    },
-  };
-}
+// function backApi(): BackgroundChannel {
+//   return {
+//     name: 'background',
+//     async get(url) {
+//       return await (await fetch(url)).json();
+//     },
+//     async createToken(data) {
+//       const auth = await oAuthApp.createToken(data);
+//       return auth.authentication.token;
+//     },
+//     async createIssue(tweet) {
+//       const auth = await Browser.storage.local.get([
+//         'refreshToken',
+//         'accessToken',
+//       ]);
+//       const octokit = new Octokit({ auth: auth.accessToken });
+//       const owner = import.meta.env.VITE_GITHUB_BLOCKLIST_OWNER;
+//       const repo = import.meta.env.VITE_GITHUB_BLOCKLIST_REPO;
+//       const issues = await octokit.rest.search.issuesAndPullRequests({
+//         q: `repo:${owner}/${repo} ${tweet.userId} in:title type:issue`,
+//       });
+//       if (issues.data.total_count > 0) {
+//         console.log('issue is exist');
+//         return;
+//       }
+//       await octokit.rest.issues.create({
+//         owner,
+//         repo,
+//         title: `Block ${tweet.userId} ${tweet.username}`,
+//         body:
+//           '```json\n' +
+//           JSON.stringify(tweet, undefined, 2) +
+//           '\n```' +
+//           `\n${tweet.link}`,
+//       });
+//       console.log('issue created');
+//     },
+//   };
+// }
 
-function register<T extends Channel<string>>(api: T) {
-  Browser.runtime.onMessage.addListener((message, _sender, sendMessage) => {
-    if (
-      typeof message.method !== 'string' ||
-      !message.method.startsWith(api.name + '.')
-    ) {
-      return;
-    }
-    const p = (message.method as string).slice((api.name + '.').length);
-    if (typeof (api as any)[p] !== 'function') {
-      throw new Error('method not found');
-    }
-    (async () => {
-      console.log('background receive message', message);
-      try {
-        const r = await (api as any)[p](...message.params);
-        // @ts-expect-error
-        sendMessage({ result: r });
-      } catch (err: any) {
-        // @ts-expect-error
-        sendMessage({
-          error: {
-            code: err.code,
-            message: err.message,
-            data: err.stack,
-          },
-        });
-      }
-    })();
-    return true;
-  });
-}
+// function register<T extends Channel<string>>(api: T) {
+//   Browser.runtime.onMessage.addListener((message, _sender, sendMessage) => {
+//     if (
+//       typeof message.method !== 'string' ||
+//       !message.method.startsWith(api.name + '.')
+//     ) {
+//       return;
+//     }
+//     const p = (message.method as string).slice((api.name + '.').length);
+//     if (typeof (api as any)[p] !== 'function') {
+//       throw new Error('method not found');
+//     }
+//     (async () => {
+//       console.log('background receive message', message);
+//       try {
+//         const r = await (api as any)[p](...message.params);
+//         // @ts-expect-error
+//         sendMessage({ result: r });
+//       } catch (err: any) {
+//         // @ts-expect-error
+//         sendMessage({
+//           error: {
+//             code: err.code,
+//             message: err.message,
+//             data: err.stack,
+//           },
+//         });
+//       }
+//     })();
+//     return true;
+//   });
+// }
 
-register(backApi());
+// register(backApi());
+
+// let db: any = null;
+
+// (async () => {
+//   db = await initDB();
+//   console.log('Content-js Database initialized', db);
+// })();
 
 // 监听消息
 Browser.runtime.onMessage.addListener(
@@ -112,6 +123,7 @@ Browser.runtime.onMessage.addListener(
     console.log(
       'background JS chrome.runtime.onMessage.addListener::',
       message,
+      JSON.stringify(message),
     );
     if (
       message?.from === MESSAGE_ORIGIN_POPUP &&
@@ -120,7 +132,28 @@ Browser.runtime.onMessage.addListener(
       // quickCapture('hello world')
       console.log("will parse storage's data...");
       console.log('get data from content script');
-      
+
+      const tabs = await Browser.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      const tabId = tabs?.[0].id;
+      if (!tabId) {
+        console.log('no active tab');
+        return;
+      }
+      const result = await sendMessageToContentScript(tabId, {
+        from: MESSAGE_ORIGIN_BACKGROUND,
+        type: MESSAGE_GET_PHASE_SPECIFIC_RAW_DATA,
+      });
+      // 异步获取 DB, 只能得到 true
+      console.log('result:', result);
+
+      // 多种 PKM 适配
+
+      quickCapture(result?.data ?? []);
+
+      // syncedBookmarksStore.upsert(result.map((x: TweetBookmarkParsedItem) => x.id));
     }
 
     // 收集 twitter bookmarks
@@ -144,35 +177,69 @@ Browser.runtime.onMessage.addListener(
   },
 );
 
+// Function to send a message to the content script and await the response
+async function sendMessageToContentScript(tabId: number, message: any) {
+  try {
+    const response = await Browser.tabs.sendMessage(tabId, message);
+    console.log('Response:', response);
+    return response;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+}
+
 // MORE, 发送内容到 logseq
-const quickCapture = async (data: string) => {
-  const tab = await Browser.tabs.query({ active: true, currentWindow: true });
-  if (!tab) return;
-  const activeTab = tab[0];
+const quickCapture = async (list: TweetBookmarkParsedItem[]) => {
   const { clipNoteLocation, clipNoteCustomPage, clipNoteTemplate } =
     await getLogseqSyncConfig();
   const now = new Date();
   const resp = await logseqClient.getUserConfig();
 
-  console.log('quickCapture', now, resp, activeTab, tab);
+  console.log('quickCapture', now, resp);
 
-  const block = blockRending({
-    url: activeTab?.url || 'https://google.com', // popup 上没有 url & title 这些
-    title: activeTab?.title,
-    data,
-    clipNoteTemplate,
-    preferredDateFormat: resp['preferredDateFormat'],
-    time: now,
+  // TODO: block Rendering
+
+  const formattedList: any = list.map((item) => {
+    item.full_text = beautifyText(item.full_text as string, item.urls);
+    return {
+      title: 'ss',
+      ...item,
+      preferredDateFormat: resp['preferredDateFormat'],
+      time: now,
+    };
   });
 
-  if (clipNoteLocation === 'customPage') {
-    await logseqClient.appendBlock(clipNoteCustomPage, block);
-  } else if (clipNoteLocation === 'currentPage') {
-    const { name: currentPage } = await logseqClient.getCurrentPage();
-    await logseqClient.appendBlock(currentPage, block);
-  } else {
-    const journalPage = format(now, resp['preferredDateFormat']);
-    await logseqClient.appendBlock(journalPage, block);
+  // TODO: ai 会内容基于已有的 tab 打标，参考 ai-tab
+
+  console.log(
+    `clipNoteLocation:${clipNoteLocation}, formattedList: ${formattedList}`,
+  );
+
+  const blocks = formattedList.map((item: any) =>
+    blockRending(clipNoteTemplate, item),
+  );
+  const journalPage = format(now, resp['preferredDateFormat']);
+  // await logseqClient.appendBatchBlock(journalPage, blocks);
+
+  //  如果 batch block 困难，可以 loop await。先暂时这样
+  for (let i = 0; i < blocks.length; i++) {
+    // TODO: 用户可以自定义
+    const resp1: DataBlock = await logseqClient.appendBlock(
+      // journalPage,
+      'twitter bookmarks',
+      blocks[i][0],
+    );
+    await logseqClient.appendBlock(resp1.uuid, blocks[i][1]);
   }
+
+  // if (clipNoteLocation === 'customPage') {
+  //   await logseqClient.appendBlock(clipNoteCustomPage, blocks);
+  // } else if (clipNoteLocation === 'currentPage') {
+  //   const { name: currentPage } = await logseqClient.getCurrentPage();
+  //   await logseqClient.appendBlock(currentPage, blocks);
+  // } else {
+  //   const journalPage = format(now, resp['preferredDateFormat']);
+  //   await logseqClient.appendBlock(journalPage, blocks);
+  // }
   // debounceBadgeSearch(activeTab.url, activeTab.id!);
 };

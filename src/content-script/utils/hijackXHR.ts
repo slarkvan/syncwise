@@ -3,7 +3,14 @@ import { TweetInfo, initIndexeddb } from './initIndexeddb';
 import { get, pick } from 'lodash-es';
 import { blockUser } from './blockUser';
 import { bookmarksStore } from './store';
-import { TWITTER_BOOKMARKS_XHR_HIJACK } from '../../constants/twitter';
+import {
+  MESSAGE_ORIGIN_CONTENT,
+  MESSAGE_SAVE_DATA_TO_DB,
+  TWITTER_BOOKMARKS_XHR_HIJACK,
+} from '../../constants/twitter';
+import { initDB } from './db';
+import { parseBookmarkResponse } from '../../parser/twitter';
+import Browser from 'webextension-polyfill';
 
 const blockUserIds = new Set<string>();
 
@@ -167,13 +174,21 @@ function filterEntries(list: any[]) {
   return list.filter((item) => !item.entryId.includes('cursor'));
 }
 
+// content-js 和 background 实例化之后，不是一个 DB。
+let db: any = null;
+
+(async () => {
+  db = await initDB();
+  console.log('Database initialized', db);
+})();
+
 export async function hijackXHR() {
   console.log('hijackXHR');
   hookXHR({
     after(xhr) {
       const isHijack = localStorage.getItem(TWITTER_BOOKMARKS_XHR_HIJACK);
-      // console.log('isHijack', isHijack);
-      if (!hijackXHR) return;
+      console.log('isHijack', isHijack);
+      if (!isHijack) return;
 
       if (
         /https:\/\/twitter.com\/i\/api\/graphql\/.*\/Bookmarks/.test(
@@ -188,9 +203,31 @@ export async function hijackXHR() {
               ?.entries ?? [],
           );
           console.log('Bookmarks entries', entries);
-          bookmarksStore.upsert(entries);
+          const parsedList = entries.map(parseBookmarkResponse);
+          // sendMessageToBackground(parsedList)
+          // if (db) {
+          //   parsedList.map((x) => {
+          //     db.put('bookmarks', {
+          //       url: x.url,
+          //       screen_name: x.screen_name,
+          //     });
+          //   });
+          // } else {
+          //   console.log('db not initialized');
+          // }
+          console.log('parsedList:', parsedList);
+          // 去重逻辑
+          bookmarksStore.upsert(parsedList);
         }
       }
     },
   });
 }
+
+// function sendMessageToBackground(list: TweetBookmarkParsedItem[]) {
+//   Browser.runtime.sendMessage({
+//     from: MESSAGE_SAVE_DATA_TO_DB,
+//     type: "save",
+//     data: list
+//   });
+// }

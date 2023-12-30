@@ -1,4 +1,7 @@
-import { KEY_TWITTER_BOOKMARKS } from '../../constants/twitter';
+import {
+  KEY_SYNCED_TWITTER_BOOKMARKS_ID_LIST,
+  KEY_TWITTER_BOOKMARKS,
+} from '../../constants/twitter';
 
 class LocalStorageStore<T> {
   private storeKey: string;
@@ -34,16 +37,33 @@ class LocalStorageStore<T> {
 
   // 读取数据
 
-  // 更新数据
+  // 去重更新数据
   private insert(data: T): void {
     const currentData = this.load();
+
     if (Array.isArray(currentData)) {
-      this.save([...currentData, ...(data as any)] as any);
+      const savedList = currentData.map((item: any) => item.id);
+      const index = (data as any).findIndex((item: any) =>
+        savedList.includes(item.id),
+      );
+
+      if (index !== -1) {
+        //  不需要更新
+        // currentData[index] = data;
+      } else {
+        // 如果没有找到相同id的项，添加新数据
+        currentData.push(data);
+      }
+
+      this.save(currentData);
     }
   }
 }
 
 // 或许加上这个人的 ID，以防多账号
 const bookmarksStore = new LocalStorageStore(KEY_TWITTER_BOOKMARKS);
+const syncedBookmarksStore = new LocalStorageStore(
+  KEY_SYNCED_TWITTER_BOOKMARKS_ID_LIST,
+);
 
-export { bookmarksStore };
+export { bookmarksStore, syncedBookmarksStore };

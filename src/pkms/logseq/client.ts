@@ -92,6 +92,11 @@ export default class LogseqClient {
     const config = await getLogseqSyncConfig();
     const endPoint = new URL(config.logseqHost);
     const apiUrl = new URL(`${endPoint.origin}/api`);
+    const body = JSON.stringify({
+      method: method,
+      args: args,
+    });
+    console.log(`logseq method:${method} body: ${body}`);
     const resp = await fetch(apiUrl, {
       mode: 'cors',
       method: 'POST',
@@ -99,10 +104,7 @@ export default class LogseqClient {
         Authorization: `Bearer ${config.logseqAuthToken}`,
         'Content-Type': 'application/json; charset=utf-8',
       },
-      body: JSON.stringify({
-        method: method,
-        args: args,
-      }),
+      body: body,
     });
 
     if (resp.status !== 200) {
@@ -115,7 +117,7 @@ export default class LogseqClient {
   private baseJson = async (method: string, args: any[]) => {
     const resp = await this.baseFetch(method, args);
     const data = await resp.json();
-    console.debug(data);
+    console.log('logseq response data:', data);
     return data;
   };
 
@@ -147,6 +149,14 @@ export default class LogseqClient {
     return html.trim();
   };
 
+  // public appendBlock = async (page: string, content: string) => {
+  //   const resp = await this.baseJson('logseq.Editor.appendBlockInPage', [
+  //     page,
+  //     content,
+  //   ]);
+  //   return resp;
+  // };
+
   private getCurrentGraph = async (): Promise<{
     name: string;
     path: string;
@@ -159,6 +169,17 @@ export default class LogseqClient {
     const resp = await this.baseJson('logseq.Editor.appendBlockInPage', [
       page,
       content,
+    ]);
+    return resp;
+  };
+
+  public appendBatchBlock = async (page: string, content: string[]) => {
+    const resp = await this.baseJson('logseq.Editor.insertBatchBlock', [
+      page,
+      content,
+      {
+        sibling: false,
+      },
     ]);
     return resp;
   };

@@ -34,35 +34,65 @@ export const versionCompare = (versionA: string, versionB: string) => {
 };
 
 export function logseqEscape(str: string): string {
-  return str.replace(/([\[\{\(])/g, '\\$1');
+  // return str.replace(/([\[\{\(])/g, '\\$1');
+  return str;
 }
 
-export function blockRending({
-  url,
-  title,
-  data,
-  clipNoteTemplate,
-  preferredDateFormat,
-  time,
-}: {
-  url?: string;
-  title?: string;
-  data: string;
-  clipNoteTemplate: string;
-  preferredDateFormat: string;
-  time: Date;
-}): string {
+interface LogSeqRenderVariables {
+  title: string;
+  url: string;
+  screen_name: string;
+  rest_id: string;
+  full_text: string;
+  preferredDateFormat: any;
+  time: any;
+}
+
+export function blockRending(
+  clipNoteTemplate: string,
+  {
+    title,
+    url,
+    screen_name,
+    rest_id,
+    full_text,
+    preferredDateFormat,
+    time,
+  }: LogSeqRenderVariables,
+): [string, string] {
   console.log(preferredDateFormat);
-  const render = engine
-    .parseAndRenderSync(clipNoteTemplate, {
+
+  // collapsed:: true
+  // {% raw %}{{twitter {% endraw %}{{url}}{% raw %}}}{% endraw %}
+
+  // TODO: better
+  const template1 = `@{{screen_name}}:{{full_text}}`;
+
+  const render1 = engine
+    .parseAndRenderSync(template1, {
       date: format(time, preferredDateFormat),
-      content: logseqEscape(data),
+
+      title: title,
       url: url,
+      full_text: logseqEscape(full_text),
+      screen_name,
+      rest_id,
+
       time: logseqTimeFormat(time),
       dt: time,
-      title: title,
     })
     .trim();
 
-  return render;
+  const template2 = `{% raw %}{{twitter {% endraw %}{{url}}{% raw %}}}{% endraw %}`;
+
+  const render2 = engine
+    .parseAndRenderSync(template2, {
+      date: format(time, preferredDateFormat),
+      url: url,
+      time: logseqTimeFormat(time),
+      dt: time,
+    })
+    .trim();
+
+  return [render1, render2];
 }

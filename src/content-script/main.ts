@@ -7,8 +7,11 @@ import {
   MESSAGE_GET_PHASE_SPECIFIC_RAW_DATA,
   MESSAGE_ORIGIN_BACKGROUND,
   MESSAGE_SYNC_TO_PKM,
+  TWITTER_BOOKMARKS_XHR_HIJACK,
 } from '../constants/twitter';
 import { parseBookmarkResponse } from '../parser/twitter';
+import { initDB } from './utils/db';
+import { bookmarksStore, syncedBookmarksStore } from './utils/store';
 
 function insertScript() {
   const script = document.createElement('script');
@@ -20,7 +23,16 @@ function insertScript() {
 
 insertScript();
 
-Browser.runtime.onMessage.addListener(async function (
+let db: any = null;
+
+(async () => {
+  db = await initDB();
+  console.log('Content-js Database initialized', db);
+})();
+
+// 不能写成 async & 必须返回 true
+// 不然 background.js 不能拿到数据
+Browser.runtime.onMessage.addListener(function (
   message,
   sender,
   sendResponse: any,
@@ -31,7 +43,11 @@ Browser.runtime.onMessage.addListener(async function (
     typeof message,
   );
   if (message?.from === MESSAGE_ORIGIN_BACKGROUND) {
-    console.log('Received message from background: ' + message, "type:", message.type);
+    console.log(
+      'Received message from background: ' + JSON.stringify(message),
+      'type:',
+      message.type,
+    );
 
     if (message?.type === MESSAGE_COLLECT_TWEETS_BOOKMARKS) {
       console.log('xi:Let us collect twitter bookmarks');
@@ -44,13 +60,23 @@ Browser.runtime.onMessage.addListener(async function (
     }
 
     if (message?.type === MESSAGE_GET_PHASE_SPECIFIC_RAW_DATA) {
-      const data = (localStorage as any).getItem(KEY_TWITTER_BOOKMARKS);
-      const list = JSON.parse(data);
-      const formattedData = list.map((x: TweetEntry) => parseBookmarkResponse(x))
-      console.log("formattedData", formattedData);
-      sendResponse({ data: formattedData });
-      return true
+      //   const list = await db.getAll("bookmarks")
+      const rawList: any = bookmarksStore.load();
+
+      // 去掉 synced 的书签
+      const syncedList: any = syncedBookmarksStore.load() ?? [];
+      const list = rawList?.filter(
+        (item: any) => !syncedList.includes(item.id),
+      );
+
+      sendResponse({ data: list });
+      syncedBookmarksStore.upsert(
+        list?.map((x: TweetBookmarkParsedItem) => x.id),
+      );
+      console.log('content js list:', list);
     }
+
+    return true;
   }
 });
 
@@ -86,7 +112,7 @@ function scrollUntilLastBookmark() {
     if (!hasNext) {
       clearInterval(scrollInterval); // 如果找到元素，停止滚动
       // 通知已经全部劫持完成
-      localStorage.removeItem('TWITTER_BOOKMARKS_XHR_HIJACK');
+      localStorage.removeItem(TWITTER_BOOKMARKS_XHR_HIJACK);
     }
   }, 1000); // 每秒执行一次
 }
@@ -105,7 +131,7 @@ function collectTwitterBookmarks(mode: string) {
   }
   // await delay(2000)
   // 让 XHR 开始劫持
-  localStorage.setItem('TWITTER_BOOKMARKS_XHR_HIJACK', '1');
+  localStorage.setItem(TWITTER_BOOKMARKS_XHR_HIJACK, '1');
   console.log('让 XHR 开始劫持');
   // 页面滚动
   // 调用函数，传入你想要查找的元素的选择器

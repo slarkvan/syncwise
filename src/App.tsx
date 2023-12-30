@@ -40,7 +40,7 @@ function useConfig(): [Config, (value: Partial<Config>) => Promise<void>] {
 export function App() {
   const [config, setConfig] = useConfig();
 
-  console.log('plugins()', config, plugins());
+  //   console.log('plugins()', config, plugins());
 
   const handleClick = () => {
     console.log('nothing happened.');
@@ -87,7 +87,7 @@ export function App() {
         </select>
       </div>
       {plugins().map((it) => {
-        console.log('it::', it);
+        // console.log('it::', it);
         if (it.type === 'button') {
           return (
             <div className="flex items-center space-x-2" key={it.name}>
