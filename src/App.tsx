@@ -1,13 +1,5 @@
-import { useState } from 'react';
-import { initI18n, langs, t } from './constants/i18n';
+import { t } from './constants/i18n';
 import Browser from 'webextension-polyfill';
-import { Lang } from './constants/langs';
-import {
-  Config,
-  setConfig,
-} from './constants/config';
-import { useMount } from 'react-use';
-import i18next from 'i18next';
 import {
   MESSAGE_COLLECT_TWEETS_BOOKMARKS,
   MESSAGE_ORIGIN_POPUP,

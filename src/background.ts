@@ -1,7 +1,4 @@
-import { CreateTokenWebFlowOptions } from '@octokit/oauth-app/dist-types/methods/create-token';
 import Browser from 'webextension-polyfill';
-import { oAuthApp } from './constants/github';
-import { Octokit } from '@octokit/rest';
 import { getLogseqSyncConfig } from './config/logseq';
 import LogseqClient from './pkms/logseq/client';
 import { blockObsidianRending, blockRending } from './utils';

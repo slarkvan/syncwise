@@ -118,13 +118,17 @@ function collectTwitterBookmarks(mode: string) {
     window.top === window,
     mode,
   );
+
   if (window.location.pathname !== '/i/bookmarks') {
     location.href = '/i/bookmarks';
   } else {
     // reload page for first XHR
+    // location.href = '/';
+    // location.href = '/i/bookmarks';
   }
   // await delay(2000)
   // 让 XHR 开始劫持
+  // TODO: 默认劫持
   localStorage.setItem(TWITTER_BOOKMARKS_XHR_HIJACK, '1');
   console.log('让 XHR 开始劫持');
   // 页面滚动
