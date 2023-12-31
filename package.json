@@ -18,6 +18,7 @@
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md,json}\" --config ./.prettierrc --cache"
   },
   "dependencies": {
+    "@geist-ui/core": "^2.3.8",
     "@liuli-util/async": "^3.6.1",
     "@liuli-util/test": "^3.7.0",
     "@mswjs/interceptors": "^0.25.2",
