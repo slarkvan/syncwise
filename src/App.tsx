@@ -21,7 +21,7 @@ export function App() {
         // sync 随人走的
         Browser.storage.local.onChanged.addListener((v) => {
             // { count: {newValue: 40, oldValue: 20 }}
-            if (v.count.newValue!== v.count.oldValue) {
+            if (v.count.newValue !== v.count.oldValue) {
                 setCount(v.count.newValue)
             }
             console.log(' Browser.storage.sync.onChanged', v)
@@ -62,9 +62,7 @@ export function App() {
             <header>
                 <h2 className={'flex-grow text-lg font-bold'}>{t('config.title')}</h2>
             </header>
-            <div className='flex items-center space-x-2'>
-                已收集{count}条书签🔖
-            </div>
+            <div className='flex items-center space-x-2'>已收集{count}条书签🔖</div>
             <div className='flex items-center space-x-2'>
                 {/* TODO: 可以类似在浏览器的右中区，提供快捷按钮 */}
                 <button onClick={handlePauseCollect}>

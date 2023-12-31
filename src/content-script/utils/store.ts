@@ -1,6 +1,6 @@
 import { KEY_SYNCED_TWITTER_BOOKMARKS_ID_LIST, KEY_TWITTER_BOOKMARKS } from '../../constants/twitter'
 
-type TCallback = (args: Record<string, any>) => void;
+type TCallback = (args: Record<string, any>) => void
 
 class LocalStorageStore<T> {
     private storeKey: string
@@ -10,7 +10,7 @@ class LocalStorageStore<T> {
     }
 
     // 创建或更新记录
-    upsert(data: T, fn?:TCallback): void {
+    upsert(data: T, fn?: TCallback): void {
         const currentData = this.load()
         if (currentData == null) {
             this.save(data, fn)
@@ -33,7 +33,7 @@ class LocalStorageStore<T> {
     private save(data: T, fn?: TCallback): void {
         localStorage.setItem(this.storeKey, JSON.stringify(data))
         fn?.({
-            length: (data as any).length
+            length: (data as any).length,
         })
     }
 

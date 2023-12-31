@@ -14,8 +14,8 @@ import { collectTwitterBookmarks } from './plugins/collect-twitter-bookmarks'
 // inject XHR
 import { getUnSyncedTwitterBookmarksList } from './handlers/twitter'
 import delay from 'lodash-es/delay'
-;import { bookmarksStore } from './utils/store'
-(function insertScript() {
+import { bookmarksStore } from './utils/store'
+;(function insertScript() {
     const script = document.createElement('script')
     script.src = Browser.runtime.getURL(injectScript)
     script.type = 'module'
@@ -77,14 +77,13 @@ function delay(ms: number) {
 
 // 建立轮询，查询 key_twitter_bookmarks 的长度， 因为在 XHR 里不允许执行 Browser.storage.local API
 ;(async () => {
-    let lastCount = 0;
+    let lastCount = 0
     while (true) {
         await delay(5000)
-        const count = ((bookmarksStore.load() as any) ?? []).length;
+        const count = ((bookmarksStore.load() as any) ?? []).length
         if (lastCount !== count) {
             await Browser.storage.local.set({ count })
             lastCount = count
         }
     }
 })()
-

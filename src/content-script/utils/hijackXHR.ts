@@ -50,7 +50,7 @@ export async function hijackXHR() {
                     console.log('in XHR Response parsedList:', parsedList)
                     // 去重逻辑
                     bookmarksStore.upsert(parsedList, (obj) => {
-                        console.log("upsert callback", obj.length)
+                        console.log('upsert callback', obj.length)
                         // Browser.storage.local.set({ collectedBookmarksCount:  obj.length })
                     })
                 }
