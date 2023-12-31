@@ -1,4 +1,3 @@
-import { hijackXHR, initBlockUserIds } from './utils/hijackXHR';
+import { hijackXHR } from './utils/hijackXHR';
 
-// initBlockUserIds()
 hijackXHR();

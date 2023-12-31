@@ -15,14 +15,6 @@
       "js": ["src/content-script/main.ts"],
       "matches": ["https://twitter.com/*"],
       "run_at": "document_start"
-    },
-    {
-      "js": ["src/content-script/listenRefreshToken.ts"],
-      "matches": [
-        "https://clean-twitter.rxliuli.com/callback/*",
-        "http://localhost:5173/callback/*"
-      ],
-      "run_at": "document_start"
     }
   ],
   "host_permissions": ["https://github.com/*", "https://api.github.com/*"],

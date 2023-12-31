@@ -10,7 +10,6 @@ import {
   TWITTER_BOOKMARKS_XHR_HIJACK,
 } from '../constants/twitter';
 import { parseBookmarkResponse } from '../parser/twitter';
-import { initDB } from './utils/db';
 import { bookmarksStore, syncedBookmarksStore } from './utils/store';
 
 function insertScript() {
@@ -22,13 +21,6 @@ function insertScript() {
 }
 
 insertScript();
-
-let db: any = null;
-
-(async () => {
-  db = await initDB();
-  console.log('Content-js Database initialized', db);
-})();
 
 // 不能写成 async & 必须返回 true
 // 不然 background.js 不能拿到数据
@@ -81,7 +73,7 @@ Browser.runtime.onMessage.addListener(function (
   }
 });
 
-await import('./loader');
+// await import('./loader');
 
 let preScrollTop = 0;
 
