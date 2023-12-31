@@ -15,6 +15,7 @@ export const LogseqVersionIsLower: LogseqClientError = {
 }
 
 export const CannotConnectWithLogseq: LogseqClientError = {
+    // port 错误 or Logseq not open
     msg: 'Cannot connect to Logseq, Please open your Logseq and config well.',
     status: 500,
     response: null,

@@ -4,6 +4,7 @@ import { NoteSyncTarget } from '../types/pkm.d'
 import { NOTE_TEXT } from '../config/note'
 import LogseqClient from '../pkms/logseq/client'
 import { getUserConfig, updateUserConfig } from '../config/config'
+import { capitalize } from 'lodash-es'
 
 /**
  *  需要设置一堆东西。
@@ -18,6 +19,9 @@ import { getUserConfig, updateUserConfig } from '../config/config'
 
 export function App() {
     console.log('Options js init.')
+    const [loading, setLoading] = useState(true)
+    const [connected, setConnected] = useState(false)
+
     const [note, setNote] = useState<NoteSyncTarget | null>(null)
     const [logseqHost, setLogseqHost] = useState<string>('')
     const [logseqPort, setLogseqPort] = useState<string>('')
@@ -64,22 +68,57 @@ export function App() {
         [note, obsidianToken, logseqToken]
     )
 
-    const checkConnection = async (): Promise<boolean> => {
+    const onHostChange = useCallback(
+        (val: string) => {
+            note === NoteSyncTarget.Logseq ? setLogseqHost(val) : setObsidianHost(val)
+            updateUserConfig({
+                [note as string]: {
+                    host: val,
+                },
+            })
+        },
+        [note]
+    )
+
+    const onPortChange = useCallback(
+        (val: string) => {
+            note === NoteSyncTarget.Logseq ? setLogseqPort(val) : setObsidianPort(val)
+            updateUserConfig({
+                [note as string]: {
+                    port: val,
+                },
+            })
+        },
+        [note]
+    )
+
+    const onTokenChange = useCallback(
+        (val: string) => {
+            note === NoteSyncTarget.Logseq ? setLogseqToken(val) : setObsidianToken(val)
+            updateUserConfig({
+                [note as string]: {
+                    token: val,
+                },
+            })
+        },
+        [note]
+    )
+
+    const checkConnection = useCallback(async (): Promise<boolean> => {
+        setLoading(true)
         const client = new LogseqClient()
-        const resp = await client.showMsg('Logseq Copliot Connect!')
+        const resp = await client.showMsg('Syncwise Connect!')
         const connectStatus = resp.msg === 'success'
-        console.log('connectStatus', connectStatus)
-        // setConnected(connectStatus);
+        setConnected(connectStatus)
         if (connectStatus) {
-            const version = await (await client.getVersion()).response
-            //   setButtonMessage(`Connected to Logseq v${version}!`);
+            setToast({ text: `${capitalize(note as string)} Connect Succeed!`, type: 'success' })
         } else {
-            //   setConnected(false);
-            //   setButtonMessage(resp.msg);
+            setConnected(false)
+            setToast({ delay: 4000, text: `${capitalize(note as string)}  Connect Failed! ${resp.msg}`, type: 'error' })
         }
-        // setLoading(false);
+        setLoading(false)
         return connectStatus
-    }
+    }, [note])
 
     return (
         <Page>
@@ -105,12 +144,20 @@ export function App() {
                         </Text>
                         <Grid.Container gap={0} justify='center' height='80px'>
                             <Grid xs={12}>
-                                <Input crossOrigin={undefined} value={host}>
+                                <Input
+                                    onChange={(e) => onHostChange(e?.target?.value ?? '')}
+                                    crossOrigin={undefined}
+                                    value={host}
+                                >
                                     Host
                                 </Input>
                             </Grid>
                             <Grid xs={12}>
-                                <Input crossOrigin={undefined} value={port}>
+                                <Input
+                                    onChange={(e) => onPortChange(e?.target?.value ?? '') as any}
+                                    crossOrigin={undefined}
+                                    value={port}
+                                >
                                     Port
                                 </Input>
                             </Grid>
@@ -119,6 +166,7 @@ export function App() {
 
                         <Input.Password
                             width='100%'
+                            onChange={(e) => onTokenChange(e?.target?.value ?? '')}
                             placeholder='Http Authorization Token'
                             crossOrigin={undefined}
                             value={token ?? ''}

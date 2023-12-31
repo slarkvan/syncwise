@@ -49,10 +49,16 @@ interface LogSeqRenderVariables {
     time: any
 }
 
-export function blockRending(
-    clipNoteTemplate: string,
-    { title, url, screen_name, nickname, rest_id, full_text, preferredDateFormat, time }: LogSeqRenderVariables
-): [string, string] {
+export function blockRending({
+    title,
+    url,
+    screen_name,
+    nickname,
+    rest_id,
+    full_text,
+    preferredDateFormat,
+    time,
+}: LogSeqRenderVariables): [string, string] {
     console.log(preferredDateFormat)
 
     // collapsed:: true

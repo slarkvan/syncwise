@@ -1,4 +1,4 @@
 export enum NoteSyncTarget {
-    Logseq = 'Logseq',
-    Obsidian = 'Obsidian',
+    Logseq = 'logseq',
+    Obsidian = 'obsidian',
 }

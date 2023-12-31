@@ -81,9 +81,13 @@ function delay(ms: number) {
     while (true) {
         await delay(5000)
         const count = ((bookmarksStore.load() as any) ?? []).length
-        if (lastCount !== count) {
-            await Browser.storage.local.set({ count })
-            lastCount = count
+        try {
+            if (lastCount !== count) {
+                await Browser.storage.local.set({ count })
+                lastCount = count
+            }
+        } catch (e) {
+            console.log('error in content script:', e)
         }
     }
 })()

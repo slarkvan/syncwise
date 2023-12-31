@@ -77,7 +77,7 @@ export type LogseqResponseType<T> = {
 export default class LogseqClient {
     private baseFetch = async (method: string, args: any[]) => {
         const config = await getLogseqSyncConfig()
-        const endPoint = new URL(config.logseqHost)
+        const endPoint = new URL(`http://${config.host}:${config.port}`)
         const apiUrl = new URL(`${endPoint.origin}/api`)
         const body = JSON.stringify({
             method: method,
@@ -88,7 +88,7 @@ export default class LogseqClient {
             mode: 'cors',
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${config.logseqAuthToken}`,
+                'Authorization': `Bearer ${config.token}`,
                 'Content-Type': 'application/json; charset=utf-8',
             },
             body: body,

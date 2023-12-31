@@ -1,5 +1,4 @@
 import { format } from 'date-fns'
-import { getLogseqSyncConfig } from '../../../config/logseq'
 import { beautifyText } from '../../../parser/twitter/bookmark'
 import LogseqClient from '../../../pkms/logseq/client'
 import { blockRending } from '../../../utils'
@@ -15,7 +14,6 @@ export const saveToLogseq = async () => {
         console.log('all bookmarks are synced')
         return
     }
-    const { clipNoteLocation, clipNoteCustomPage, clipNoteTemplate } = await getLogseqSyncConfig()
     const now = new Date()
     const resp = await logseqClient.getUserConfig()
     // TODO: block Rendering
@@ -30,9 +28,7 @@ export const saveToLogseq = async () => {
 
     // TODO: ai 会内容基于已有的 tab 打标，参考 ai-tab
 
-    console.log(`clipNoteLocation:${clipNoteLocation}, formattedList: ${formattedList}`)
-
-    const blocks = formattedList.map((item: any) => blockRending(clipNoteTemplate, item))
+    const blocks = formattedList.map((item: any) => blockRending(item))
     const journalPage = format(now, resp['preferredDateFormat'])
     // await logseqClient.appendBatchBlock(journalPage, blocks);
 

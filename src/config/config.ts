@@ -1,16 +1,17 @@
 import Browser from 'webextension-polyfill'
-import { defaults } from 'lodash-es'
+import { defaults, merge } from 'lodash-es'
 import { NoteSyncTarget } from '../types/pkm.d'
+export type LogseqSyncConfig = {
+    host: string
+    port: string
+    token: string | null
+    pageType: 'journal' | 'custom'
+    pageName: string // 同步去哪里
+}
 
 export type UserConfig = {
     target: NoteSyncTarget
-    logseq: {
-        host: string
-        port: string
-        token: string | null
-        pageType: 'journal' | 'custom'
-        pageName: string // 同步去哪里
-    }
+    logseq: LogseqSyncConfig
     obsidian: {
         host: string
         port: string
@@ -45,5 +46,7 @@ export async function getUserConfig(): Promise<UserConfig> {
 
 export async function updateUserConfig(updates: Partial<UserConfig>) {
     console.debug('update configs', updates)
-    return Browser.storage.local.set(updates)
+    const currentConfig = await getUserConfig() // 获取当前配置
+    const mergedConfig = merge({}, currentConfig, updates) // 合并配置
+    return Browser.storage.local.set(mergedConfig)
 }
