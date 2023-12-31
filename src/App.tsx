@@ -4,21 +4,24 @@ import {
     MESSAGE_COLLECT_TWEETS_BOOKMARKS,
     MESSAGE_ORIGIN_POPUP,
     MESSAGE_SYNC_TO_OBSIDIAN,
-    MESSAGE_SYNC_TO_PKM,
+    MESSAGE_SYNC_TO_LOGSEQ,
+    MESSAGE_PAUSE_TWITTER_BOOKMARKS_COLLECTION,
 } from './constants/twitter'
 
 export function App() {
-    //   console.log('plugins()', config, plugins());
+    // debounce
 
-    const handleClick = () => {
-        console.log('nothing happened.')
+    const handlePauseCollect = () => {
+        Browser.runtime.sendMessage({
+            from: MESSAGE_ORIGIN_POPUP,
+            type: MESSAGE_PAUSE_TWITTER_BOOKMARKS_COLLECTION,
+        })
     }
 
-    // debounce
     const handleSync = () => {
         Browser.runtime.sendMessage({
             from: MESSAGE_ORIGIN_POPUP,
-            type: MESSAGE_SYNC_TO_PKM,
+            type: MESSAGE_SYNC_TO_LOGSEQ,
         })
     }
 
@@ -41,6 +44,11 @@ export function App() {
             <header>
                 <h2 className={'flex-grow text-lg font-bold'}>{t('config.title')}</h2>
             </header>
+            <div className='flex items-center space-x-2'>
+                <button onClick={handlePauseCollect}>
+                    <label className='font-bold'>PAUSE Collect Twitter Bookmarks</label>
+                </button>
+            </div>
             <div className='flex items-center space-x-2'>
                 <button onClick={handleCollect}>
                     <label className='font-bold'>Collect Twitter Bookmarks</label>

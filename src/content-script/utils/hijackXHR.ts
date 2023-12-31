@@ -1,5 +1,3 @@
-import { AsyncArray } from '@liuli-util/async'
-import { get, pick } from 'lodash-es'
 import { bookmarksStore } from './store'
 import { TWITTER_BOOKMARKS_XHR_HIJACK } from '../../constants/twitter'
 import { parseBookmarkResponse } from '../../parser/twitter'
@@ -29,12 +27,15 @@ function hookXHR(options: { after(xhr: XMLHttpRequest): string | void }) {
     }
 }
 
+function filterEntries(list: any[]) {
+    return list.filter((item) => !item.entryId.includes('cursor'))
+}
+
 export async function hijackXHR() {
     console.log('hijackXHR')
     hookXHR({
         after(xhr) {
             const isHijack = localStorage.getItem(TWITTER_BOOKMARKS_XHR_HIJACK)
-            console.log('isHijack', isHijack)
             if (!isHijack) return
 
             if (/https:\/\/twitter.com\/i\/api\/graphql\/.*\/Bookmarks/.test(xhr.responseURL)) {
@@ -44,20 +45,8 @@ export async function hijackXHR() {
                     const entries = filterEntries(
                         response?.data?.bookmark_timeline_v2?.timeline?.instructions?.[0]?.entries ?? []
                     )
-                    console.log('Bookmarks entries', entries)
                     const parsedList = entries.map(parseBookmarkResponse)
-                    // sendMessageToBackground(parsedList)
-                    // if (db) {
-                    //   parsedList.map((x) => {
-                    //     db.put('bookmarks', {
-                    //       url: x.url,
-                    //       screen_name: x.screen_name,
-                    //     });
-                    //   });
-                    // } else {
-                    //   console.log('db not initialized');
-                    // }
-                    console.log('parsedList:', parsedList)
+                    console.log('in XHR Response parsedList:', parsedList)
                     // 去重逻辑
                     bookmarksStore.upsert(parsedList)
                 }
@@ -65,11 +54,3 @@ export async function hijackXHR() {
         },
     })
 }
-
-// function sendMessageToBackground(list: TweetBookmarkParsedItem[]) {
-//   Browser.runtime.sendMessage({
-//     from: MESSAGE_SAVE_DATA_TO_DB,
-//     type: "save",
-//     data: list
-//   });
-// }
