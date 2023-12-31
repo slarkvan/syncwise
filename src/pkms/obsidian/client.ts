@@ -1,30 +1,5 @@
-import { OBSIDIAN_HTTP_TOKEN } from '../../constants/token'
-
-// export async function _obsidianRequest(
-//   hostname: string,
-//   apiKey: string = OBSIDIAN_HTTP_TOKEN,
-//   path: string,
-//   options: RequestInit,
-//   insecureMode: boolean = true,
-// ): ReturnType<typeof fetch> {
-//   const requestOptions: RequestInit = {
-//     ...options,
-//     headers: {
-//       ...options.headers,
-//       Authorization: `Bearer ${apiKey}`,
-//     },
-//     method: options.method?.toUpperCase(),
-//     mode: 'cors',
-//   };
-//   console.log('obsidian requestOptions:', requestOptions);
-
-//   return fetch(
-//     `http${insecureMode ? '' : 's'}://${hostname}:${
-//       insecureMode ? '27123' : '27124'
-//     }${path}`,
-//     requestOptions,
-//   );
-// }
+import Browser from 'webextension-polyfill'
+import { ObsidianSyncConfig } from '../../config/config'
 
 class ObsidianClient {
     private static instance: ObsidianClient
@@ -40,18 +15,50 @@ class ObsidianClient {
         return ObsidianClient.instance
     }
 
-    public async request(
-        hostname: string,
-        apiKey: string = OBSIDIAN_HTTP_TOKEN,
-        path: string,
-        options: RequestInit,
-        insecureMode: boolean = true
-    ): ReturnType<typeof fetch> {
+    private async getLogseqSyncConfig(): Promise<ObsidianSyncConfig> {
+        const data = await Browser.storage.local.get('obsidian')
+        const { host, port, token, pageType, pageName, httpsPort, insecureMode } = data?.obsidian ?? {}
+        return {
+            host,
+            port,
+            token,
+            pageType,
+            pageName,
+            httpsPort,
+            insecureMode,
+        }
+    }
+
+    public async checkConnectStatus(): Promise<any> {
+        const res = await this.request('/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((res) => res.json())
+            .then((r) => {
+                console.log('r', r)
+                if (!r.authenticated) {
+                    return { msg: 'Failed to authenticate with Obsidian, please check if the token is correct.' }
+                }
+                return { msg: 'success' }
+            })
+            .catch((e) => ({
+                status: 'error',
+                msg: e?.message ?? 'unknown error, please check obsidian Local REST API plugin settings.',
+            }))
+        console.log('checkConnectStatus', res)
+        return res
+    }
+
+    public async request(path: string, options: RequestInit): ReturnType<typeof fetch> {
+        const { host, port, httpsPort, token, insecureMode } = await this.getLogseqSyncConfig()
         const requestOptions: RequestInit = {
             ...options,
             headers: {
                 ...options.headers,
-                Authorization: `Bearer ${apiKey}`,
+                Authorization: `Bearer ${token}`,
             },
             method: options.method?.toUpperCase(),
             mode: 'cors',
@@ -59,7 +66,7 @@ class ObsidianClient {
         console.log('obsidian requestOptions:', requestOptions)
 
         return fetch(
-            `http${insecureMode ? '' : 's'}://${hostname}:${insecureMode ? '27123' : '27124'}${path}`,
+            `http${insecureMode ? '' : 's'}://${host}:${insecureMode ? port : httpsPort}${path}`,
             requestOptions
         )
     }

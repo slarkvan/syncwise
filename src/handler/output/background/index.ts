@@ -8,6 +8,7 @@ async function sendMessageToContentScript(tabId: number, message: any) {
         console.log('Response:', response)
         return response
     } catch (error: any) {
+        // TODO: error handling
         throw new Error(error.message)
     }
 }

@@ -23,7 +23,7 @@ export const saveToObsidian = async () => {
 
     console.log('mdContent', mdContent)
 
-    const resp = await obsidianClient.request('127.0.0.1', undefined, '/vault/twitter.md', {
+    const resp = await obsidianClient.request('/vault/twitter.md', {
         method: 'POST',
         headers: {
             'Content-Type': 'text/markdown',

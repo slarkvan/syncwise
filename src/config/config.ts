@@ -9,33 +9,39 @@ export type LogseqSyncConfig = {
     pageName: string // 同步去哪里
 }
 
+export type ObsidianSyncConfig = {
+    host: string
+    port: string // http port
+    token: string | null
+    pageType: 'journal' | 'custom'
+    pageName: string // 同步去哪里
+    insecureMode: boolean
+    httpsPort: string
+}
+
 export type UserConfig = {
     target: NoteSyncTarget
     logseq: LogseqSyncConfig
-    obsidian: {
-        host: string
-        port: string
-        token: string | null
-        pageType: 'journal' | 'custom'
-        pageName: string // 同步去哪里
-    }
+    obsidian: ObsidianSyncConfig
 }
 
 const userConfigWithDefaultValue: UserConfig = {
     target: NoteSyncTarget.Obsidian,
     logseq: {
-        host: 'localhost',
+        host: '127.0.0.1',
         port: '12315',
         token: null,
         pageType: 'custom',
         pageName: 'twitter bookmarks', // Default destination page for Logseq
     },
     obsidian: {
-        host: 'localhost',
-        port: '8080',
+        host: '127.0.0.1',
+        port: '27123',
+        httpsPort: '27124',
         token: null,
         pageType: 'journal',
         pageName: 'twitter bookmarks', // Default destination page for Obsidian
+        insecureMode: false, // 不安全模式
     },
 }
 
