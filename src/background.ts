@@ -56,9 +56,10 @@ Browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     }
 
     // forward to popup
-
     sendResponse()
-})
+});
+
+
 ;(async () => {
     const val = await Browser.storage.local.get('count')
     console.log('background val:', val)
