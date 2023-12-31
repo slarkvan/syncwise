@@ -1,6 +1,7 @@
 import Browser from 'webextension-polyfill'
 import injectScript from './injectScript?script&module'
 import {
+    KEY_TWITTER_BOOKMARKS,
     MESSAGE_COLLECT_TWEETS_BOOKMARKS,
     MESSAGE_GET_PHASE_SPECIFIC_RAW_DATA,
     MESSAGE_ORIGIN_BACKGROUND,
@@ -12,7 +13,9 @@ import { collectTwitterBookmarks } from './plugins/collect-twitter-bookmarks'
 
 // inject XHR
 import { getUnSyncedTwitterBookmarksList } from './handlers/twitter'
-;(function insertScript() {
+import delay from 'lodash-es/delay'
+;import { bookmarksStore } from './utils/store'
+(function insertScript() {
     const script = document.createElement('script')
     script.src = Browser.runtime.getURL(injectScript)
     script.type = 'module'
@@ -42,3 +45,46 @@ Browser.runtime.onMessage.addListener(function (message, sender, sendResponse: a
 
     sendResponse()
 })
+
+// Send a message from the content script to the popup
+// async function sendMessageToPopup() {
+//     return await Browser.runtime.sendMessage({ type: 'count', data: '77' })
+// }
+
+// Call this function whenever you need to send the message (e.g., in response to a page event)
+
+// popup 打打开，才真正实现代码
+// 如果消息发太早，没有用
+
+// setTimeout(() => {
+//     sendMessageToPopup()
+// }, 5000)
+
+function delay(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+// ;(async () => {
+//     let count = 0
+//     while (true) {
+//         await delay(1000)
+//         count++
+//         await Browser.storage.local.set({ count })
+//         const val = await Browser.storage.local.get('count')
+//         console.log('content val:', val)
+//     }
+// })()
+
+// 建立轮询，查询 key_twitter_bookmarks 的长度， 因为在 XHR 里不允许执行 Browser.storage.local API
+;(async () => {
+    let lastCount = 0;
+    while (true) {
+        await delay(5000)
+        const count = ((bookmarksStore.load() as any) ?? []).length;
+        if (lastCount !== count) {
+            await Browser.storage.local.set({ count })
+            lastCount = count
+        }
+    }
+})()
+

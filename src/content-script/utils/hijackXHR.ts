@@ -1,6 +1,7 @@
 import { bookmarksStore } from './store'
 import { TWITTER_BOOKMARKS_XHR_HIJACK } from '../../constants/twitter'
 import { parseBookmarkResponse } from '../../parser/twitter'
+// import Browser from 'webextension-polyfill'
 
 function hookXHR(options: { after(xhr: XMLHttpRequest): string | void }) {
     const send = XMLHttpRequest.prototype.send
@@ -48,7 +49,10 @@ export async function hijackXHR() {
                     const parsedList = entries.map(parseBookmarkResponse)
                     console.log('in XHR Response parsedList:', parsedList)
                     // 去重逻辑
-                    bookmarksStore.upsert(parsedList)
+                    bookmarksStore.upsert(parsedList, (obj) => {
+                        console.log("upsert callback", obj.length)
+                        // Browser.storage.local.set({ collectedBookmarksCount:  obj.length })
+                    })
                 }
             }
         },

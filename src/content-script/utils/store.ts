@@ -1,5 +1,7 @@
 import { KEY_SYNCED_TWITTER_BOOKMARKS_ID_LIST, KEY_TWITTER_BOOKMARKS } from '../../constants/twitter'
 
+type TCallback = (args: Record<string, any>) => void;
+
 class LocalStorageStore<T> {
     private storeKey: string
 
@@ -8,12 +10,12 @@ class LocalStorageStore<T> {
     }
 
     // 创建或更新记录
-    upsert(data: T): void {
+    upsert(data: T, fn?:TCallback): void {
         const currentData = this.load()
         if (currentData == null) {
-            this.save(data)
+            this.save(data, fn)
         } else {
-            this.insert(data)
+            this.insert(data, fn)
         }
     }
 
@@ -28,14 +30,17 @@ class LocalStorageStore<T> {
     }
 
     // 创建或更新数据
-    private save(data: T): void {
+    private save(data: T, fn?: TCallback): void {
         localStorage.setItem(this.storeKey, JSON.stringify(data))
+        fn?.({
+            length: (data as any).length
+        })
     }
 
     // 读取数据
 
     // 去重更新数据
-    private insert(data: T): void {
+    private insert(data: T, fn?: TCallback): void {
         const currentData = this.load()
         let list: any = []
 
@@ -48,7 +53,7 @@ class LocalStorageStore<T> {
             // 如果没有找到相同id的项，添加新数据
         }
         const oldList: any = currentData ?? []
-        this.save([...oldList, ...list] as any)
+        this.save([...oldList, ...list] as any, fn)
     }
 }
 

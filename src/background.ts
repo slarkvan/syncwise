@@ -10,6 +10,8 @@ import {
 import { saveToLogseq } from './handler/output/logseq'
 import { saveToObsidian } from './handler/output/obsidian'
 
+Browser.action.setBadgeText({ text: '66%' })
+
 // 监听消息
 Browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     console.log('background JS chrome.runtime.onMessage.addListener::', message, JSON.stringify(message))
@@ -53,5 +55,11 @@ Browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         })
     }
 
+    // forward to popup
+
     sendResponse()
 })
+;(async () => {
+    const val = await Browser.storage.local.get('count')
+    console.log('background val:', val)
+})()

@@ -5,18 +5,18 @@ let preScrollTop = 0
 let count = 0
 
 function scroll() {
-    const value =localStorage.getItem(TASK_TWITTER_BOOKMARKS_SCROLL_FOR_COLLECTION)
-    
+    const value = localStorage.getItem(TASK_TWITTER_BOOKMARKS_SCROLL_FOR_COLLECTION)
+
     if (value !== 'init') {
         console.log('用户主动终止滚动')
         return false
     }
 
     console.log('scroll before', count)
-    window.scrollBy(0, 2000)
+    window.scrollBy(0, 4000)
     count++
 
-    if (count > 6) {
+    if (count > 8) {
         console.log('测试环境已经滚动到页面底部了！')
         return false
     }
