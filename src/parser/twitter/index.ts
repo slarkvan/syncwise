@@ -1,1 +1,1 @@
-export { parseBookmarkResponse } from './bookmark';
+export { parseBookmarkResponse } from './bookmark'

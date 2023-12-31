@@ -1,3 +1,3 @@
-import { hijackXHR } from './utils/hijackXHR';
+import { hijackXHR } from './utils/hijackXHR'
 
-hijackXHR();
+hijackXHR()
