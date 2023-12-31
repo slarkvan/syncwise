@@ -51,8 +51,6 @@ class LocalStorageStore<T> {
       //  不需要更新
       // currentData[index] = data;
       // 如果没有找到相同id的项，添加新数据
-
-      currentData.push(data);
     }
     const oldList: any = currentData ?? [];
     this.save([...oldList, ...list] as any);

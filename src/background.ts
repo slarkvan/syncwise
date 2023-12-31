@@ -5,7 +5,7 @@ import { Octokit } from '@octokit/rest';
 import { TweetInfo } from './content-script/utils/initIndexeddb';
 import { getLogseqSyncConfig } from './config/logseq';
 import LogseqClient from './pkms/logseq/client';
-import { blockRending } from './utils';
+import { blockObsidianRending, blockRending } from './utils';
 import { format } from 'date-fns';
 import {
   MESSAGE_COLLECT_TWEETS_BOOKMARKS,
@@ -16,7 +16,8 @@ import {
   MESSAGE_SYNC_TO_PKM,
 } from './constants/twitter';
 import { DataBlock } from './types/logseq/block';
-import { beautifyText } from './parser/twitter/bookmark';
+import { beautifyObsidianText, beautifyText } from './parser/twitter/bookmark';
+import obsidianClient from './pkms/obsidian/client';
 
 const logseqClient = new LogseqClient();
 
@@ -156,13 +157,13 @@ Browser.runtime.onMessage.addListener(
       // 多种 PKM 适配
       const list = await getUnSyncedTwitterBookmarks();
       if (Array.isArray(list) && list.length > 0) {
-        quickCapture(list);
+        await quickCapture(list);
       }
 
       // syncedBookmarksStore.upsert(result.map((x: TweetBookmarkParsedItem) => x.id));
     }
 
-    // Obsidian
+    // save to Obsidian
     if (
       message?.from === MESSAGE_ORIGIN_POPUP &&
       message.type === MESSAGE_SYNC_TO_OBSIDIAN
@@ -170,6 +171,7 @@ Browser.runtime.onMessage.addListener(
       const list = await getUnSyncedTwitterBookmarks();
       console.log('message/sync_to_obsidian', list);
       if (Array.isArray(list) && list.length > 0) {
+        await saveToObsidian(list);
       }
     }
 
@@ -190,6 +192,8 @@ Browser.runtime.onMessage.addListener(
           });
         }
       });
+      // 显示返回 true
+      return true;
     }
 
     return true;
@@ -261,4 +265,33 @@ const quickCapture = async (list: TweetBookmarkParsedItem[]) => {
   //   await logseqClient.appendBlock(journalPage, blocks);
   // }
   // debounceBadgeSearch(activeTab.url, activeTab.id!);
+};
+
+const saveToObsidian = async (list: TweetBookmarkParsedItem[]) => {
+  const formattedList: any = list.map((item) => {
+    item.full_text = beautifyObsidianText(item.full_text as string, item.urls);
+    return {
+      ...item,
+    };
+  });
+
+  const mdContent = formattedList.reduce((accr: string, item: any) => {
+    return accr + blockObsidianRending(item);
+  }, '');
+
+  console.log('mdContent', mdContent);
+
+  const resp = await obsidianClient.request(
+    '127.0.0.1',
+    undefined,
+    '/vault/twitter.md',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/markdown',
+      },
+      body: mdContent,
+    },
+  );
+  console.log(resp);
 };

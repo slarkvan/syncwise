@@ -8,7 +8,7 @@ export function parseBookmarkResponse(
   const screen_name = core?.user_results?.result?.legacy?.screen_name;
   const url = `https://twitter.com/${screen_name}/status/${rest_id}`;
   const id = rest_id;
-  const nickname = core?.user_results?.result?.legacy?.name ?? "no nickname";
+  const nickname = core?.user_results?.result?.legacy?.name ?? 'no nickname';
 
   // 需要去重，不然正常循环匹配会出错
   const uniqueUrls: any = {};
@@ -45,6 +45,81 @@ export function beautifyText(text: string, urls: UrlItem[]) {
   // \r\n 换行
   // # twitter hash
   let str1 = text.replace(/\n\n/g, '\r\n').replace(/#/g, '');
+
+  if (urls.length > 0) {
+    console.log('str1 before:', str1, urls);
+
+    urls.forEach((item) => {
+      const { label, value } = item;
+      const markdownUrl = `[${label}](${value})`;
+      // 逐个替换文本中的每个 URL 实例
+      const regex = new RegExp(value, 'g');
+      str1 = str1.replace(regex, () => markdownUrl);
+    });
+    console.log('str1 after:', str1, urls);
+  }
+  // 用户数 &gt; 5000
+  const entities: any = {
+    '&lt;': '<',
+    '&gt;': '>',
+    '&amp;': '&',
+    '&quot;': '"',
+    '&apos;': "'",
+    '&cent;': '¢',
+    '&pound;': '£',
+    '&yen;': '¥',
+    '&euro;': '€',
+    '&copy;': '©',
+    '&reg;': '®',
+    '&trade;': '™',
+    '&nbsp;': ' ',
+    '&iexcl;': '¡',
+    '&curren;': '¤',
+    '&brvbar;': '¦',
+    '&sect;': '§',
+    '&uml;': '¨',
+    '&ordf;': 'ª',
+    '&laquo;': '«',
+    '&not;': '¬',
+    '&shy;': '­',
+    '&macr;': '¯',
+    '&deg;': '°',
+    '&plusmn;': '±',
+    '&sup2;': '²',
+    '&sup3;': '³',
+    '&acute;': '´',
+    '&micro;': 'µ',
+    '&para;': '¶',
+    '&middot;': '·',
+    '&cedil;': '¸',
+    '&sup1;': '¹',
+    '&ordm;': 'º',
+    '&raquo;': '»',
+    '&frac14;': '¼',
+    '&frac12;': '½',
+    '&frac34;': '¾',
+    '&iquest;': '¿',
+    '&times;': '×',
+    '&divide;': '÷',
+    // ...可以继续添加更多
+  };
+
+  str1 = str1.replace(/&[a-zA-Z]+;/g, (match) => entities[match] || match);
+  return str1;
+}
+
+/**
+ * twitter to obsidian
+ */
+export function beautifyObsidianText(text: string, urls: UrlItem[]) {
+  if (!text) {
+    return '';
+  }
+  let str1 = text;
+  // \r\n 换行
+  // str1 = text.replace(/\n\n/g, '\r\n').replace(/#/g, '');
+  // markdown 的 引用 >, obsidian 不用去 hash
+  // str1 = text.replace(/\n\n/g, '>');
 
   if (urls.length > 0) {
     console.log('str1 before:', str1, urls);

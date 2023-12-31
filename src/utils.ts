@@ -99,3 +99,38 @@ export function blockRending(
 
   return [render1, render2];
 }
+
+// TODO: premium 可以选择多种魔板
+export function blockObsidianRending({
+  title,
+  url,
+  screen_name,
+  nickname,
+  rest_id,
+  full_text,
+}: LogSeqRenderVariables): string {
+  const template1 = `
+  ---
+
+[{{nickname}}@{{screen_name}}](https://twitter.com/{{screen_name}}):
+
+{{full_text}}
+
+![twitter]({{url}})
+
+  ---
+  `;
+
+  const render1 = engine
+    .parseAndRenderSync(template1, {
+      title: title,
+      url: url,
+      full_text: full_text,
+      screen_name,
+      rest_id,
+      nickname,
+    })
+    .trim();
+
+  return render1;
+}

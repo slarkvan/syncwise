@@ -92,7 +92,7 @@ function scroll() {
   window.scrollBy(0, 2000);
 
   count++;
-  if (count > 3) {
+  if (count > 6) {
     console.log('测试环境已经滚动到页面底部了！');
     return false;
   }
@@ -119,6 +119,7 @@ function scrollUntilLastBookmark() {
 }
 
 function collectTwitterBookmarks(mode: string) {
+  // TODO: 这个会把消息通道给干掉
   console.log(
     'fn collectTwitterBookmarks init',
     window.location.pathname,
