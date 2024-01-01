@@ -9,26 +9,24 @@ import {
 } from './constants/twitter'
 import { saveToLogseq } from './handler/output/logseq'
 import { saveToObsidian } from './handler/output/obsidian'
+import { isProduction } from './utils/env'
 
 Browser.action.setBadgeText({ text: '66%' })
 
 // 监听消息
-Browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+Browser.runtime.onMessage.addListener(async function (message, sender, sendResponse) {
     console.log('background JS chrome.runtime.onMessage.addListener::', message, JSON.stringify(message))
-
-    if (message?.from === MESSAGE_ORIGIN_POPUP && message.type === MESSAGE_SYNC_TO_LOGSEQ) {
+    if (message?.type === 'OPEN_OPTIONS_PAGE') {
+        Browser.runtime.openOptionsPage()
+    } else if (message.type === MESSAGE_SYNC_TO_LOGSEQ) {
         console.log('will execute saveToLogseq()')
         saveToLogseq()
-    }
-
-    // save to Obsidian
-    if (message?.from === MESSAGE_ORIGIN_POPUP && message.type === MESSAGE_SYNC_TO_OBSIDIAN) {
+    } else if (message.type === MESSAGE_SYNC_TO_OBSIDIAN) {
+        // save to Obsidian
         console.log('will execute saveToObsidian()')
         saveToObsidian()
-    }
-
-    // forward message to content script
-    if (message?.from === MESSAGE_ORIGIN_POPUP && message.type === MESSAGE_COLLECT_TWEETS_BOOKMARKS) {
+    } else if (message.type === MESSAGE_COLLECT_TWEETS_BOOKMARKS) {
+        // forward message to content script
         console.log('forward message to content script')
         Browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
             const tab: any = tabs[0]
@@ -39,10 +37,7 @@ Browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
                 })
             }
         })
-    }
-
-    // pause
-    if (message?.from === MESSAGE_ORIGIN_POPUP && message.type === MESSAGE_PAUSE_TWITTER_BOOKMARKS_COLLECTION) {
+    } else if (message.type === MESSAGE_PAUSE_TWITTER_BOOKMARKS_COLLECTION) {
         console.log('forward message to content script')
         Browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
             const tab: any = tabs[0]
@@ -57,10 +52,27 @@ Browser.runtime.onMessage.addListener(function (message, sender, sendResponse) {
 
     // forward to popup
     sendResponse()
-});
+})
 
+Browser.runtime.onConnect.addListener(async (port) => {
+    switch (port.name) {
+        case 'port1':
+            port.onMessage.addListener((msg) => {
+                if (msg.type === 'query') {
+                    port.postMessage({ type: '666' })
+                } else if (msg.type === 'open-options') {
+                    Browser.runtime.openOptionsPage()
+                } else if (msg.type === 'type1') {
+                    port.postMessage({ type: 'type2' })
+                    console.log('type1', msg)
+                } else {
+                    console.debug('background receive msg', msg)
+                }
+            })
 
-;(async () => {
-    const val = await Browser.storage.local.get('count')
-    console.log('background val:', val)
-})()
+            break
+    }
+    return
+})
+
+isProduction()

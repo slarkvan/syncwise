@@ -75,6 +75,15 @@ function delay(ms: number) {
 //     }
 // })()
 
+const port = Browser.runtime.connect({ name: 'port1' })
+port.postMessage({ type: 'type1' })
+port.onMessage.addListener((msg) => {
+    console.log('content JS chrome.runtime.onMessage.addListener:', JSON.stringify(msg), typeof msg)
+})
+port.onDisconnect.addListener(() => {
+    console.log('content JS chrome.runtime.onDisconnect.addListener')
+})
+
 // 建立轮询，查询 key_twitter_bookmarks 的长度， 因为在 XHR 里不允许执行 Browser.storage.local API
 ;(async () => {
     let lastCount = 0

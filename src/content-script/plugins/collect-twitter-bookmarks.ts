@@ -16,10 +16,10 @@ function scroll() {
     window.scrollBy(0, 4000)
     count++
 
-    if (count > 8) {
-        console.log('测试环境已经滚动到页面底部了！')
-        return false
-    }
+    // if (count > 8) {
+    //     console.log('测试环境已经滚动到页面底部了！')
+    //     return false
+    // }
 
     var scrollTop = window.scrollY || document.documentElement.scrollTop
     if (scrollTop === preScrollTop) {
