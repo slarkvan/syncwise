@@ -11,7 +11,8 @@ import { saveToLogseq } from './handler/output/logseq'
 import { saveToObsidian } from './handler/output/obsidian'
 import { isProduction } from './utils/env'
 
-Browser.action.setBadgeText({ text: '66%' })
+// 显示可以同步多少条
+Browser.action.setBadgeText({ text: '1' })
 
 // 监听消息
 Browser.runtime.onMessage.addListener(async function (message, sender, sendResponse) {

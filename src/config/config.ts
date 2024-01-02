@@ -1,11 +1,11 @@
 import Browser from 'webextension-polyfill'
 import { defaults, merge } from 'lodash-es'
-import { NoteSyncTarget } from '../types/pkm.d'
+import { NoteSyncLocationType, NoteSyncTarget } from '../types/pkm.d'
 export type LogseqSyncConfig = {
     host: string
     port: string
     token: string | null
-    pageType: 'journal' | 'custom'
+    pageType: NoteSyncLocationType
     pageName: string // 同步去哪里
 }
 
@@ -13,7 +13,7 @@ export type ObsidianSyncConfig = {
     host: string
     port: string // http port
     token: string | null
-    pageType: 'journal' | 'custom'
+    pageType: NoteSyncLocationType
     pageName: string // 同步去哪里
     insecureMode: boolean
     httpsPort: string
@@ -25,22 +25,24 @@ export type UserConfig = {
     obsidian: ObsidianSyncConfig
 }
 
+const DEFAULT_PAGE_NAME = 'twitter bookmarks'
+
 const userConfigWithDefaultValue: UserConfig = {
     target: NoteSyncTarget.Obsidian,
     logseq: {
         host: '127.0.0.1',
         port: '12315',
         token: null,
-        pageType: 'custom',
-        pageName: 'twitter bookmarks', // Default destination page for Logseq
+        pageType: NoteSyncLocationType.CustomPage,
+        pageName: DEFAULT_PAGE_NAME, // Default destination page for Logseq
     },
     obsidian: {
         host: '127.0.0.1',
         port: '27123',
         httpsPort: '27124',
         token: null,
-        pageType: 'journal',
-        pageName: 'twitter bookmarks', // Default destination page for Obsidian
+        pageType: NoteSyncLocationType.CustomPage,
+        pageName: DEFAULT_PAGE_NAME, // Default destination page for Obsidian
         insecureMode: false, // 不安全模式
     },
 }

@@ -1,10 +1,10 @@
-export const TWITTER_BOOKMARKS_XHR_HIJACK = 'twitter_bookmarks_xhr_hijack'
+export const TWITTER_BOOKMARKS_XHR_HIJACK = 'syncwise/twitter_bookmarks_xhr_hijack'
 
-export const TASK_TWITTER_BOOKMARKS_SCROLL_FOR_COLLECTION = 'task_twitter_bookmarks_scroll_for_collection'
+export const TASK_TWITTER_BOOKMARKS_SCROLL_FOR_COLLECTION = 'syncwise/task_twitter_bookmarks_scroll_for_collection'
 
 // localStorage key
-export const KEY_TWITTER_BOOKMARKS = 'key_twitter_bookmarks'
-export const KEY_SYNCED_TWITTER_BOOKMARKS_ID_LIST = 'key_synced_twitter_bookmarks_id_list'
+export const KEY_TWITTER_BOOKMARKS = 'syncwise/key_twitter_bookmarks'
+export const KEY_SYNCED_TWITTER_BOOKMARKS_ID_LIST = 'syncwise/key_synced_twitter_bookmarks_id_list'
 
 export const MESSAGE_PAUSE_TWITTER_BOOKMARKS_COLLECTION = 'message/pause_twitter_bookmarks_collection'
 

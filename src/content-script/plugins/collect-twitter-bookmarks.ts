@@ -1,8 +1,10 @@
 import { TASK_TWITTER_BOOKMARKS_SCROLL_FOR_COLLECTION, TWITTER_BOOKMARKS_XHR_HIJACK } from '../../constants/twitter'
+import { isProduction } from '../../utils/env'
 
 let preScrollTop = 0
 //  测试专用
 let count = 0
+let tryTime = 0
 
 function scroll() {
     const value = localStorage.getItem(TASK_TWITTER_BOOKMARKS_SCROLL_FOR_COLLECTION)
@@ -13,21 +15,31 @@ function scroll() {
     }
 
     console.log('scroll before', count)
-    window.scrollBy(0, 4000)
+    // api 时间
+    window.scrollBy(0, 2000)
     count++
 
-    // if (count > 8) {
-    //     console.log('测试环境已经滚动到页面底部了！')
-    //     return false
-    // }
+    // 测试环境专用
+    if (!isProduction()) {
+        if (count > 8) {
+            console.log('测试环境已经滚动到页面底部了！')
+            return false
+        }
+    }
 
     var scrollTop = window.scrollY || document.documentElement.scrollTop
-    if (scrollTop === preScrollTop) {
-        console.log('已经滚动到页面底部了！')
-        return false
+    if (scrollTop + window.innerHeight >= document.body.scrollHeight) {
+        // 到底了
+        if (tryTime >= 3) {
+            console.log('已经滚动到页面底部了！')
+            return false
+        } else {
+            tryTime++
+        }
     } else {
-        preScrollTop = scrollTop
+        tryTime = 0
     }
+
     return true
 }
 
