@@ -27,3 +27,4 @@ release/
 *.pem
 *.crx
 debug/
+dev/
