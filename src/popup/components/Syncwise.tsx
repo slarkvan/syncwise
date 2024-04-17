@@ -42,20 +42,20 @@ export default function Syncwise({ count, target }: any) {
     return (
         <>
             <div className='flex items-center space-x-2'>已收集{count}条书签🔖</div>
-            <Button onClick={handlePauseCollect} placeholder={'11'}>
-                PAUSE Collect Twitter Bookmark
+            <Button onClick={handlePauseCollect} placeholder={''}>
+                暂停收集
             </Button>
-            <Button onClick={handleCollect} placeholder={'11'}>
-                Collect Twitter Bookmarks
+            <Button onClick={handleCollect} placeholder={''}>
+                开始收集
             </Button>
             {target === NoteSyncTarget.Logseq && (
-                <Button onClick={handleSync} placeholder={'11'}>
-                    Sync To Logseq
+                <Button onClick={handleSync} placeholder={''}>
+                    同步到Logseq
                 </Button>
             )}
             {target === NoteSyncTarget.Obsidian && (
                 <Button onClick={handleSyncToObsidian} placeholder={'11'}>
-                    Sync To Obsidian
+                    同步到Obsidian
                 </Button>
             )}
         </>

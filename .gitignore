@@ -26,3 +26,4 @@ dist-firefox
 release/
 *.pem
 *.crx
+debug/

@@ -1,37 +1,37 @@
-# Clean Twitter
+# Syncwise
 
-<!-- markdownlint-disable MD033 -->
+## 同步指南
 
-<a href="https://chrome.google.com/webstore/detail/lbbfmkbgembfbohdadeggdcgdkmfdmpb"><img src="https://user-images.githubusercontent.com/585534/107280622-91a8ea80-6a26-11eb-8d07-77c548b28665.png" alt="Get uBlock Origin for Chromium"></a> <a href="https://addons.mozilla.org/zh-CN/firefox/addon/clean-twitter-2333/"><img src="https://user-images.githubusercontent.com/585534/107280546-7b9b2a00-6a26-11eb-8f9f-f95932f4bfec.png" alt="Get uBlock Origin for Firefox"></a> <a href="https://www.producthunt.com/posts/clean-twitter?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-clean&#0045;twitter" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=401819&theme=light" alt="Clean&#0032;Twitter - Some&#0032;features&#0032;of&#0032;cleaning&#0032;Twitter | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+### 1. 启用笔记本同步
 
-> [中文](https://github.com/rxliuli/clean-twitter/blob/master/README.zh-CN.md)
+#### Obsidian 同步设置
 
-Clean up some annoying elements on Twitter and make your Twitter experience cleaner.
+- 请在 Obsidian 的插件市场下载并安装 **Local REST API** 插件。
+  ![Obsidian 插件安装](./docs/obsidian-plugin.jpg)
+- 配置 **Local REST API** 插件。
+  ![配置 Obsidian 插件](./docs/obsidian-plugin-config.jpg)
+- 在 Syncwise 的配置页面确保 Obsidian 可以通过浏览器插件进行连接。
+  ![检查 Obsidian 连接](./docs/obsidian-config.jpg)
 
-✨ Features
+#### Logseq 同步设置
 
-- Hide home tabs
-- Hide timeline: Explore
-- Hide right sidebar
-- Hide view Twee
-- Hide discover more
-- Hide live
-- Hide other
-- Restore share link
-- Restore the logo
-- Restore tabbar
-- Block scam tweets
+- 在 Logseq 中启用 **Http API server** 功能。
+  ![Logseq 设置](./docs/logseq-setting.jpg)
+- 开启 **Http API server** 并设置访问令牌（token）。
+  ![启动 Logseq 服务器](./docs/logseq-server-start.jpg)
+  ![设置 Logseq 访问令牌](./docs/logseq-token-setting.jpg)
+- 在 Syncwise 的配置页面检查是否可以通过浏览器插件连接到 Logseq。
+  ![检查 Logseq 连接](./docs/check-logseq-connection.jpg)
 
-🎉 Watch demo video
+### 2. 开启 Twitter 笔记同步
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/dYWI7RQMH_A/0.jpg)](https://www.youtube.com/watch?v=dYWI7RQMH_A)
+- 在 Twitter 页面上，点击 Syncwise 面板的【开始收集】按钮，并等待页面自动滚动至底部。
+  ![开始收集笔记](./docs/syncwise-collect-start.jpg)
 
-🚀 Get started
+## 常见问题解答
 
-1. Install the plug-in in the chrome or firefox extension store
-2. Click the toolbar to select the language used by twitter (the default is based on the browser language)
-3. Choose which features to enable or disable (some features will be enabled automatically)
+### Q: 使用此功能会导致账号被封锁吗？
+**A:** 不会。
 
-## Limitations
-
-Since Firefox does not support the CSS feature `:has` by default, it needs to be manually enabled. Refer to: <https://developer.mozilla.org/en-US/docs/Web/CSS/:has#browser_compatibility>
+### Q: 数据的隐私性如何？
+**A:** 我**高度**重视你的隐私保护，纯本地代码。
