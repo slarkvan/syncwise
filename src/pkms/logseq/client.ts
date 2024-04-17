@@ -9,6 +9,7 @@ import {
     UnknownIssues,
     NoSearchingResult,
 } from './error'
+import { LogseqSyncConfig } from '../../config/config'
 
 const logseqLinkExt = (graph: string, query: string) => {
     return {
@@ -74,7 +75,22 @@ export type LogseqResponseType<T> = {
     count?: number
 }
 
-export default class LogseqClient {
+class LogseqClient {
+    private static instance: LogseqClient
+
+    private constructor() {}
+
+    public static getInstance(): LogseqClient {
+        if (!LogseqClient.instance) {
+            LogseqClient.instance = new LogseqClient()
+        }
+        return LogseqClient.instance
+    }
+
+    async getLogseqSyncConfig(): Promise<LogseqSyncConfig> {
+        return await getLogseqSyncConfig()
+    }
+
     private baseFetch = async (method: string, args: any[]) => {
         const config = await getLogseqSyncConfig()
         const endPoint = new URL(`http://${config.host}:${config.port}`)
@@ -323,3 +339,7 @@ export default class LogseqClient {
         })
     }
 }
+
+const logseqClient = LogseqClient.getInstance()
+
+export default logseqClient
