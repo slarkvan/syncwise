@@ -1,8 +1,6 @@
 import { TASK_TWITTER_BOOKMARKS_SCROLL_FOR_COLLECTION, TWITTER_BOOKMARKS_XHR_HIJACK } from '../../constants/twitter'
 import { isProduction } from '../../utils/env'
 
-let preScrollTop = 0
-//  测试专用
 let count = 0
 let tryTime = 0
 
@@ -19,8 +17,8 @@ function scroll() {
     window.scrollBy(0, 2000)
     count++
 
-    // 测试环境专用
     if (!isProduction()) {
+        //  自测
         if (count > 8) {
             console.log('测试环境已经滚动到页面底部了！')
             return false
@@ -44,7 +42,6 @@ function scroll() {
 }
 
 function reset() {
-    preScrollTop = 0
     count = 0
 }
 

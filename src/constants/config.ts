@@ -13,7 +13,6 @@ export interface Config {
 }
 
 export async function setConfig(config: Partial<Config>) {
-    // 本地存储
     console.log('本地存储 config', config)
     await Browser.storage.sync.set(config)
 }

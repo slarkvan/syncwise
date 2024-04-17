@@ -1,4 +1,3 @@
-import { format } from 'date-fns'
 import { beautifyText } from '../../../parser/twitter/bookmark'
 import LogseqClient from '../../../pkms/logseq/client'
 import { blockRending } from '../../../utils'
@@ -29,8 +28,6 @@ export const saveToLogseq = async () => {
     // TODO: ai 会内容基于已有的 tab 打标，参考 ai-tab
 
     const blocks = formattedList.map((item: any) => blockRending(item))
-    const journalPage = format(now, resp['preferredDateFormat'])
-    // await logseqClient.appendBatchBlock(journalPage, blocks);
 
     //  如果 batch block 困难，可以 loop await。先暂时这样
     for (let i = 0; i < blocks.length; i++) {
@@ -42,15 +39,4 @@ export const saveToLogseq = async () => {
         )
         await logseqClient.appendBlock(resp1.uuid, blocks[i][1])
     }
-
-    // if (clipNoteLocation === 'customPage') {
-    //   await logseqClient.appendBlock(clipNoteCustomPage, blocks);
-    // } else if (clipNoteLocation === 'currentPage') {
-    //   const { name: currentPage } = await logseqClient.getCurrentPage();
-    //   await logseqClient.appendBlock(currentPage, blocks);
-    // } else {
-    //   const journalPage = format(now, resp['preferredDateFormat']);
-    //   await logseqClient.appendBlock(journalPage, blocks);
-    // }
-    // debounceBadgeSearch(activeTab.url, activeTab.id!);
 }

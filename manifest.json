@@ -21,7 +21,6 @@
       "run_at": "document_start"
     }
   ],
-  "host_permissions": ["https://github.com/*", "https://api.github.com/*"],
   "background": {
     "service_worker": "src/background.ts"
   }

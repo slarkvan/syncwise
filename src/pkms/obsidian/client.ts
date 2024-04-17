@@ -4,9 +4,7 @@ import { ObsidianSyncConfig } from '../../config/config'
 class ObsidianClient {
     private static instance: ObsidianClient
 
-    private constructor() {
-        // 私有构造函数确保不会外部实例化
-    }
+    private constructor() {}
 
     public static getInstance(): ObsidianClient {
         if (!ObsidianClient.instance) {
@@ -15,7 +13,7 @@ class ObsidianClient {
         return ObsidianClient.instance
     }
 
-    private async getLogseqSyncConfig(): Promise<ObsidianSyncConfig> {
+    async getObsidianSyncConfig(): Promise<ObsidianSyncConfig> {
         const data = await Browser.storage.local.get('obsidian')
         const { host, port, token, pageType, pageName, httpsPort, insecureMode } = data?.obsidian ?? {}
         return {
@@ -53,7 +51,8 @@ class ObsidianClient {
     }
 
     public async request(path: string, options: RequestInit): ReturnType<typeof fetch> {
-        const { host, port, httpsPort, token, insecureMode } = await this.getLogseqSyncConfig()
+        const { host, port, httpsPort, token, insecureMode } = await this.getObsidianSyncConfig()
+        console.log('getObsidianSyncConfig', host, port, httpsPort, token, insecureMode)
         const requestOptions: RequestInit = {
             ...options,
             headers: {

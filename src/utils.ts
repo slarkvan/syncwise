@@ -97,7 +97,7 @@ export function blockRending({
     return [render1, render2]
 }
 
-// TODO: premium 可以选择多种魔板
+// TODO: 也许可以选择多种模板
 export function blockObsidianRending({
     title,
     url,
@@ -113,7 +113,7 @@ export function blockObsidianRending({
 
 {{full_text}}
 
-![twitter]({{url}})
+[帖子详情链接]({{url}})
 
   ---
   `

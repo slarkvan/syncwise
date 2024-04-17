@@ -6,9 +6,5 @@ export const getUnSyncedTwitterBookmarksList = (cb: (d: { data: TweetBookmarkPar
     const syncedList: any = syncedBookmarksStore.load() ?? []
     const list = rawList?.filter((item: any) => !syncedList.includes(item.id))
     cb({ data: list })
-    // TODO: sync to local storage
-    // syncedBookmarksStore.upsert(
-    //   list?.map((x: TweetBookmarkParsedItem) => x.id),
-    // );
     console.log('content js list:', list)
 }

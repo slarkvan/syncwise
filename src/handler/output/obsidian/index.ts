@@ -17,8 +17,8 @@ const saveToObsidianSharding = async (list: TweetBookmarkParsedItem[]) => {
 
     console.log('mdContent', mdContent)
     // 切换到阅读模式
-    const resp = await obsidianClient.request('/vault/twitter bookmarks.md', {
-        // const resp = await obsidianClient.request('/vault/twitter.md', {
+    const { pageName } = await obsidianClient.getObsidianSyncConfig()
+    const resp = await obsidianClient.request(`/vault/${pageName}.md`, {
         method: 'POST',
         headers: {
             'Content-Type': 'text/markdown',
@@ -30,6 +30,7 @@ const saveToObsidianSharding = async (list: TweetBookmarkParsedItem[]) => {
 
 export const saveToObsidian = async () => {
     const list = await getUnSyncedTwitterBookmarks()
+    console.log('getUnSyncedTwitterBookmarks list', list)
     if (!Array.isArray(list) || list.length === 0) {
         console.log('all bookmarks are synced')
         return

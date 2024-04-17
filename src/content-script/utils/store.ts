@@ -57,7 +57,7 @@ class LocalStorageStore<T> {
     }
 }
 
-// 或许加上这个人的 ID，以防多账号
+// 或许加上这个人的 ID，以防一个浏览器里多个 X 账号
 const bookmarksStore = new LocalStorageStore(KEY_TWITTER_BOOKMARKS)
 const syncedBookmarksStore = new LocalStorageStore(KEY_SYNCED_TWITTER_BOOKMARKS_ID_LIST)
 

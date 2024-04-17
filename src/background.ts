@@ -2,7 +2,6 @@ import Browser from 'webextension-polyfill'
 import {
     MESSAGE_COLLECT_TWEETS_BOOKMARKS,
     MESSAGE_ORIGIN_BACKGROUND,
-    MESSAGE_ORIGIN_POPUP,
     MESSAGE_SYNC_TO_OBSIDIAN,
     MESSAGE_SYNC_TO_LOGSEQ,
     MESSAGE_PAUSE_TWITTER_BOOKMARKS_COLLECTION,
@@ -12,7 +11,7 @@ import { saveToObsidian } from './handler/output/obsidian'
 import { isProduction } from './utils/env'
 
 // 显示可以同步多少条
-Browser.action.setBadgeText({ text: '1' })
+// Browser.action.setBadgeText({ text: '1' })
 
 // 监听消息
 Browser.runtime.onMessage.addListener(async function (message, sender, sendResponse) {
