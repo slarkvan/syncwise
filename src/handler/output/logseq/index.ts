@@ -1,9 +1,9 @@
-import { beautifyLogseqText } from '../../../parser/twitter/bookmark'
-import { blockRending } from '../../../utils'
-import { DataBlock } from '../../../types/logseq/block'
+import { beautifyLogseqText } from '@/parser/twitter/bookmark'
+import { blockRending } from '@/utils'
+import { DataBlock } from '@/types/logseq/block'
 import { getUnSyncedTwitterBookmarks } from '../background'
-import logseqClient from '../../../pkms/logseq/client'
-import { getLogseqSyncConfig } from '../../../config/logseq'
+import logseqClient from '@/pkms/logseq/client'
+import { getLogseqSyncConfig } from '@/config/logseq'
 
 export const saveToLogseq = async () => {
     const list = await getUnSyncedTwitterBookmarks()

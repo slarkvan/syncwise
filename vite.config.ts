@@ -2,6 +2,7 @@
 import { defineConfig, UserConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { crx } from '@crxjs/vite-plugin'
+import { fileURLToPath, URL } from 'url'
 import manifest from './manifest.json'
 import { i18nextDtsGen } from '@liuli-util/rollup-plugin-i18next-dts-gen'
 import { firefox } from '@liuli-util/vite-plugin-firefox-dist'
@@ -52,7 +53,7 @@ export default defineConfig(({ mode }) => {
         },
         resolve: {
             alias: {
-                '@': path.resolve(__dirname, 'src'),
+                '@': path.resolve(__dirname, './src'),
             },
         },
         test: {

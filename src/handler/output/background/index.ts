@@ -1,5 +1,5 @@
 import Browser from 'webextension-polyfill'
-import { MESSAGE_GET_PHASE_SPECIFIC_RAW_DATA, MESSAGE_ORIGIN_BACKGROUND } from '../../../constants/twitter'
+import { MESSAGE_GET_PHASE_SPECIFIC_RAW_DATA, MESSAGE_ORIGIN_BACKGROUND } from '@/constants/twitter'
 
 async function sendMessageToContentScript(tabId: number, message: any) {
     try {

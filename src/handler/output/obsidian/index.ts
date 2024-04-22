@@ -1,6 +1,6 @@
-import { beautifyObsidianText } from '../../../parser/twitter/bookmark'
-import obsidianClient from '../../../pkms/obsidian/client'
-import { blockObsidianRending } from '../../../utils'
+import { beautifyObsidianText } from '@/parser/twitter/bookmark'
+import obsidianClient from '@/pkms/obsidian/client'
+import { blockObsidianRending } from '@/utils'
 import { getUnSyncedTwitterBookmarks } from '../background'
 
 const saveToObsidianSharding = async (list: TweetBookmarkParsedItem[]) => {

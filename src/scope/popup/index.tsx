@@ -1,18 +1,9 @@
-import { t } from 'i18next'
 import { GearIcon, QuestionIcon } from '@primer/octicons-react'
 import { useCallback, useEffect, useState } from 'react'
 import Browser from 'webextension-polyfill'
-import logo from '../assets/logo.png'
-import {
-    MESSAGE_ORIGIN_POPUP,
-    MESSAGE_PAUSE_TWITTER_BOOKMARKS_COLLECTION,
-    MESSAGE_SYNC_TO_LOGSEQ,
-    MESSAGE_COLLECT_TWEETS_BOOKMARKS,
-    MESSAGE_SYNC_TO_OBSIDIAN,
-} from '../../constants/twitter'
-import { Button } from '@geist-ui/core'
-import { getUserConfig } from '../../config/config'
-import { NoteSyncTarget } from '../../types/pkm'
+import logo from '@/assets/logo.png'
+import { getUserConfig } from '@/config/config'
+import { NoteSyncTarget } from '@/types/pkm.d'
 import Syncwise from './components/Syncwise'
 
 function PopupPage() {
