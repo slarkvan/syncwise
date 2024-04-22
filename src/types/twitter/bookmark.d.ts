@@ -36,7 +36,7 @@ interface TweetResults {
 
 interface TweetResult {
     __typename: string
-    rest_id: string // TODO: 1735955857593290906  https://twitter.com/rxliuli/status/1735955857593290906
+    rest_id: string
     core: Core
     unmention_data: any
     note_tweet?: NoteTweet // 只有在「展开的case」下出现
@@ -92,7 +92,7 @@ interface UserLegacy {
     profile_banner_url: string
     profile_image_url_https: string
     profile_interstitial_type: string
-    screen_name: string // TODO: rxliuli https://twitter.com/rxliuli/status/1735955857593290906
+    screen_name: string
     statuses_count: number
     translator_type: string
     verified: boolean

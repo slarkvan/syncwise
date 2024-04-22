@@ -1,7 +1,6 @@
 import Browser from 'webextension-polyfill'
 import { MESSAGE_GET_PHASE_SPECIFIC_RAW_DATA, MESSAGE_ORIGIN_BACKGROUND } from '../../../constants/twitter'
 
-// Function to send a message to the content script and await the response
 async function sendMessageToContentScript(tabId: number, message: any) {
     try {
         const response = await Browser.tabs.sendMessage(tabId, message)
@@ -23,7 +22,6 @@ export async function getUnSyncedTwitterBookmarks(): Promise<TweetBookmarkParsed
         console.log('no active tab')
         return
     }
-    console.log('tabId:', tabId)
     const result = await sendMessageToContentScript(tabId, {
         from: MESSAGE_ORIGIN_BACKGROUND,
         type: MESSAGE_GET_PHASE_SPECIFIC_RAW_DATA,

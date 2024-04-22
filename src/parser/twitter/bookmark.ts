@@ -1,13 +1,11 @@
 export function parseBookmarkResponse(tweetData: TweetEntry): TweetBookmarkParsedItem {
     const { rest_id, core, legacy, note_tweet } = tweetData?.content?.itemContent?.tweet_results?.result ?? {}
-    // twitter 的 entities 大有学问
     const images = (legacy?.entities?.media ?? []).map((x) => x?.media_url_https)
     const screen_name = core?.user_results?.result?.legacy?.screen_name
     const url = `https://twitter.com/${screen_name}/status/${rest_id}`
     const id = rest_id
     const nickname = core?.user_results?.result?.legacy?.name ?? 'no nickname'
 
-    // 需要去重，不然正常循环匹配会出错
     const uniqueUrls: any = {}
     const urls: any = []
 
@@ -33,8 +31,7 @@ export function parseBookmarkResponse(tweetData: TweetEntry): TweetBookmarkParse
 /**
  * twitter to logseq
  */
-// 将 \n\n 变成 ’‘
-export function beautifyText(text: string, urls: UrlItem[]) {
+export function beautifyLogseqText(text: string, urls: UrlItem[]) {
     if (!text) {
         return ''
     }
@@ -48,7 +45,6 @@ export function beautifyText(text: string, urls: UrlItem[]) {
         urls.forEach((item) => {
             const { label, value } = item
             const markdownUrl = `[${label}](${value})`
-            // 逐个替换文本中的每个 URL 实例
             const regex = new RegExp(value, 'g')
             str1 = str1.replace(regex, () => markdownUrl)
         })
@@ -112,14 +108,8 @@ export function beautifyObsidianText(text: string, urls: UrlItem[]) {
         return ''
     }
     let str1 = text
-    // \r\n 换行
-    // str1 = text.replace(/\n\n/g, '\r\n').replace(/#/g, '');
-    // markdown 的 引用 >, obsidian 不用去 hash
-    // str1 = text.replace(/\n\n/g, '>');
 
     if (urls.length > 0) {
-        console.log('str1 before:', str1, urls)
-
         urls.forEach((item) => {
             const { label, value } = item
             const markdownUrl = `[${label}](${value})`

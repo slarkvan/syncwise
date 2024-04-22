@@ -1,4 +1,4 @@
-import { beautifyText } from '../../../parser/twitter/bookmark'
+import { beautifyLogseqText } from '../../../parser/twitter/bookmark'
 import { blockRending } from '../../../utils'
 import { DataBlock } from '../../../types/logseq/block'
 import { getUnSyncedTwitterBookmarks } from '../background'
@@ -14,7 +14,7 @@ export const saveToLogseq = async () => {
     const now = new Date()
     const resp = await logseqClient.getUserConfig()
     const formattedList: any = list.map((item) => {
-        item.full_text = beautifyText(item.full_text as string, item.urls)
+        item.full_text = beautifyLogseqText(item.full_text as string, item.urls)
         return {
             ...item,
             preferredDateFormat: resp['preferredDateFormat'],

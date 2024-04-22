@@ -32,7 +32,6 @@ function filterEntries(list: any[]) {
 }
 
 export async function hijackXHR() {
-    console.log('hijackXHR')
     hookXHR({
         after(xhr) {
             const isHijack = localStorage.getItem(TWITTER_BOOKMARKS_XHR_HIJACK)
@@ -46,11 +45,9 @@ export async function hijackXHR() {
                         response?.data?.bookmark_timeline_v2?.timeline?.instructions?.[0]?.entries ?? []
                     )
                     const parsedList = entries.map(parseBookmarkResponse)
-                    console.log('in XHR Response parsedList:', parsedList)
                     // 去重逻辑
                     bookmarksStore.upsert(parsedList, (obj) => {
                         console.log('upsert callback', obj.length)
-                        // Browser.storage.local.set({ collectedBookmarksCount:  obj.length })
                     })
                 }
             }

@@ -1,37 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import {
-    Button,
-    Card,
-    Divider,
-    Grid,
-    Input,
-    Page,
-    Radio,
-    Spacer,
-    Text,
-    Toggle,
-    Tooltip,
-    useToasts,
-} from '@geist-ui/core'
-import { NoteSyncLocationType, NoteSyncTarget } from '../types/pkm.d'
+import { Button, Grid, Input, Page, Radio, Spacer, Text, Toggle, Tooltip, useToasts } from '@geist-ui/core'
+import { NoteSyncLocationType, NoteSyncTarget } from '@/types/pkm'
 
-import { NOTE_TEXT } from '../config/note'
-import LogseqClient from '../pkms/logseq/client'
-import { getUserConfig, updateUserConfig } from '../config/config'
+import { NOTE_TEXT } from '@/scope/options/config/note'
+import LogseqClient from '@/pkms/logseq/client'
+import obsidianClient from '@/pkms/obsidian/client'
+import { getUserConfig, updateUserConfig } from '../../config/config'
 import { capitalize } from 'lodash-es'
-import obsidianClient from '../pkms/obsidian/client'
 import { QuestionIcon } from '@primer/octicons-react'
-
-/**
- *  需要设置一堆东西。
- *  logseq
- *      - token
- *      - pagename
- *
- *  obsidian
- *      - ss
- *     - pagename
- */
 
 export function App() {
     console.log('Options js init.')

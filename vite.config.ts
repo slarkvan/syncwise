@@ -7,9 +7,6 @@ import { i18nextDtsGen } from '@liuli-util/rollup-plugin-i18next-dts-gen'
 import { firefox } from '@liuli-util/vite-plugin-firefox-dist'
 import { UserConfig as TestConfig } from 'vitest/config'
 import path from 'path'
-// import { createRequire } from 'node:module'
-
-// const require = createRequire(__filename)
 
 export default defineConfig(({ mode }) => {
     const plugins = [
@@ -53,12 +50,11 @@ export default defineConfig(({ mode }) => {
                 port: 5173,
             },
         },
-        // resolve: {
-        //   alias: {
-        //     '@octokit/oauth-app': '@octokit/oauth-app/dist-src/index.js',
-        //     octokit: require.resolve('octokit/dist-web/index.js'),
-        //   },
-        // },
+        resolve: {
+            alias: {
+                '@': path.resolve(__dirname, 'src'),
+            },
+        },
         test: {
             environment: 'happy-dom',
             setupFiles: ['./src/setupTests.ts'],

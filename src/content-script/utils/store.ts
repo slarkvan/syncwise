@@ -47,10 +47,6 @@ class LocalStorageStore<T> {
         if (Array.isArray(currentData)) {
             const savedList = currentData.map((item: any) => item.id)
             list = (data as any).filter((item: any) => item.id && !savedList.includes(item.id))
-
-            //  不需要更新
-            // currentData[index] = data;
-            // 如果没有找到相同id的项，添加新数据
         }
         const oldList: any = currentData ?? []
         this.save([...oldList, ...list] as any, fn)

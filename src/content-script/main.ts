@@ -1,5 +1,5 @@
 import Browser from 'webextension-polyfill'
-import injectScript from './injectScript?script&module'
+import injectScript from '@/content-script/inject-script?script&module'
 import {
     MESSAGE_COLLECT_TWEETS_BOOKMARKS,
     MESSAGE_GET_PHASE_SPECIFIC_RAW_DATA,
@@ -7,12 +7,11 @@ import {
     MESSAGE_PAUSE_TWITTER_BOOKMARKS_COLLECTION,
     TASK_TWITTER_BOOKMARKS_SCROLL_FOR_COLLECTION,
     TWITTER_BOOKMARKS_XHR_HIJACK,
-} from '../constants/twitter'
-import { collectTwitterBookmarks } from './plugins/collect-twitter-bookmarks'
+} from '@/constants/twitter'
+import { collectTwitterBookmarks } from '@/content-script/plugins/collect-twitter-bookmarks'
 
-// inject XHR
-import { getUnSyncedTwitterBookmarksList } from './handlers/twitter'
-import { bookmarksStore } from './utils/store'
+import { getUnsyncedTwitterBookmarks } from '@/content-script/handlers/twitter'
+import { bookmarksStore } from '@/content-script/utils/store'
 ;(function insertScript() {
     const script = document.createElement('script')
     script.src = Browser.runtime.getURL(injectScript)
@@ -26,14 +25,13 @@ import { bookmarksStore } from './utils/store'
 // 不能写成 async & 必须返回 true
 // 不然 background.js 不能拿到数据
 Browser.runtime.onMessage.addListener(function (message, sender, sendResponse: any) {
-    console.log('content JS chrome.runtime.onMessage.addListener:', JSON.stringify(message), typeof message)
     if (message?.from === MESSAGE_ORIGIN_BACKGROUND) {
         if (message?.type === MESSAGE_COLLECT_TWEETS_BOOKMARKS) {
-            collectTwitterBookmarks('message')
+            collectTwitterBookmarks()
         }
 
         if (message?.type === MESSAGE_GET_PHASE_SPECIFIC_RAW_DATA) {
-            getUnSyncedTwitterBookmarksList(sendResponse)
+            getUnsyncedTwitterBookmarks(sendResponse)
         }
 
         if (message?.type === MESSAGE_PAUSE_TWITTER_BOOKMARKS_COLLECTION) {
@@ -48,20 +46,10 @@ function delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-const port = Browser.runtime.connect({ name: 'port1' })
-port.postMessage({ type: 'type1' })
-port.onMessage.addListener((msg) => {
-    console.log('content JS chrome.runtime.onMessage.addListener:', JSON.stringify(msg), typeof msg)
-})
-port.onDisconnect.addListener(() => {
-    console.log('content JS chrome.runtime.onDisconnect.addListener')
-})
-
-// 建立轮询，查询 key_twitter_bookmarks 的长度， 因为在 XHR 里不允许执行 Browser.storage.local API
 ;(async () => {
     let lastCount = 0
     while (true) {
-        await delay(5000)
+        await delay(3000)
         const count = ((bookmarksStore.load() as any) ?? []).length
         try {
             if (lastCount !== count) {

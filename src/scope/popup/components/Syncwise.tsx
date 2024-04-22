@@ -1,13 +1,13 @@
 import { Button } from '@geist-ui/core'
 import React from 'react'
-import { NoteSyncTarget } from '../../types/pkm.d'
+import { NoteSyncTarget } from '../../../types/pkm'
 import {
     MESSAGE_COLLECT_TWEETS_BOOKMARKS,
     MESSAGE_ORIGIN_POPUP,
     MESSAGE_PAUSE_TWITTER_BOOKMARKS_COLLECTION,
     MESSAGE_SYNC_TO_LOGSEQ,
     MESSAGE_SYNC_TO_OBSIDIAN,
-} from '../../constants/twitter'
+} from '../../../constants/twitter'
 import Browser from 'webextension-polyfill'
 
 export default function Syncwise({ count, target }: any) {

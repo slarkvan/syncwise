@@ -14,6 +14,5 @@ export const getLogseqSyncConfig = async (): Promise<LogseqSyncConfig> => {
 }
 
 export const saveLogseqSyncConfig = async (updates: Partial<LogseqSyncConfig>) => {
-    console.log('saveLogseqSyncConfig', updates)
     await Browser.storage.local.set(updates)
 }

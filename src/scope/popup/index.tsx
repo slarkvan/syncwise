@@ -9,10 +9,10 @@ import {
     MESSAGE_SYNC_TO_LOGSEQ,
     MESSAGE_COLLECT_TWEETS_BOOKMARKS,
     MESSAGE_SYNC_TO_OBSIDIAN,
-} from '../constants/twitter'
+} from '../../constants/twitter'
 import { Button } from '@geist-ui/core'
-import { getUserConfig } from '../config/config'
-import { NoteSyncTarget } from '../types/pkm.d'
+import { getUserConfig } from '../../config/config'
+import { NoteSyncTarget } from '../../types/pkm'
 import Syncwise from './components/Syncwise'
 
 function PopupPage() {

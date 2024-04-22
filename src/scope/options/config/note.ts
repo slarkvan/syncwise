@@ -1,4 +1,4 @@
-import { NoteSyncTarget } from '../types/pkm.d'
+import { NoteSyncTarget } from '@/types/pkm.d'
 
 export const NOTE_TEXT = {
     [NoteSyncTarget.Obsidian]: {
