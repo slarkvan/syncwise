@@ -1,6 +1,6 @@
 export type TranslateType = {
-    "example": {
-        value: "example"
-        params: [key: "example"]
+    example: {
+        value: 'example'
+        params: [key: 'example']
     }
-};
+}

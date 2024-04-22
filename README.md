@@ -36,3 +36,15 @@
 
 ### Q: 数据的隐私性如何？
 **A:** 我**高度**重视你的隐私保护，纯本地代码。
+
+
+## 致谢
+
+- [rxliuli/clean-twitter](https://github.com/rxliuli/clean-twitter)
+
+- [hkgnp/chrome-extension-logseq-quickcapture](https://github.com/hkgnp/chrome-extension-logseq-quickcapture)
+- Others
+
+## License
+
+MIT

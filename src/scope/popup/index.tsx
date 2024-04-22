@@ -21,14 +21,11 @@ function PopupPage() {
             const obj = await Browser.storage.local.get('count')
             setCount(obj.count || 0)
         })()
-        // local 是本都
-        // sync 随人走的
+
         Browser.storage.local.onChanged.addListener((v) => {
-            // { count: {newValue: 40, oldValue: 20 }}
             if (v.count.newValue !== v.count.oldValue) {
                 setCount(v.count.newValue)
             }
-            console.log(' Browser.storage.sync.onChanged', v)
         })
     }, [])
 
@@ -50,14 +47,11 @@ function PopupPage() {
                 </span>
             </div>
             <div>
-                <QuestionIcon size={16} /> how to config it?
+                <a href='https://github.com/slarkvan/syncwise' target='_blank'>
+                    <QuestionIcon size={16} /> 配置文档
+                </a>
             </div>
-            {/* <header>
-                <h2 className={'flex-grow text-lg font-bold'}>{t('config.title')}</h2>
-            </header> */}
-            {/* TODO: 可以类似在浏览器的右中区，提供快捷按钮 */}
-            {target ? <Syncwise count={count} target={target} /> : <div>no target</div>}
-            {/* TODO: help how to config */}
+            {target ? <Syncwise count={count} target={target} /> : <div>你还未选择同步到哪个笔记</div>}
         </div>
     )
 }

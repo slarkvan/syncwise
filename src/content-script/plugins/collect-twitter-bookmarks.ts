@@ -50,6 +50,7 @@ export function scrollUntilLastBookmark() {
         if (!hasNext) {
             clearInterval(scrollInterval)
             localStorage.removeItem(TWITTER_BOOKMARKS_XHR_HIJACK)
+            localStorage.removeItem(TASK_TWITTER_BOOKMARKS_SCROLL_FOR_COLLECTION)
             reset()
         }
     }, 1000)

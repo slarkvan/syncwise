@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, Grid, Input, Page, Radio, Spacer, Text, Toggle, Tooltip, useToasts } from '@geist-ui/core'
-import { NoteSyncLocationType, NoteSyncTarget } from '@/types/pkm'
+import { NoteSyncLocationType, NoteSyncTarget } from '@/types/pkm.d'
 
 import { NOTE_TEXT } from '@/scope/options/config/note'
-import LogseqClient from '@/pkms/logseq/client'
 import obsidianClient from '@/pkms/obsidian/client'
 import { getUserConfig, updateUserConfig } from '../../config/config'
 import { capitalize } from 'lodash-es'
 import { QuestionIcon } from '@primer/octicons-react'
+import logseqClient from '@/pkms/logseq/client'
 
 export function App() {
     console.log('Options js init.')
@@ -55,6 +55,8 @@ export function App() {
             setObsidianSyncLocationType(config.obsidian.pageType)
             setObsidianCustomPageName(config.obsidian.pageName)
         })
+        // init save to local
+        updateUserConfig({})
     }, [])
 
     const onNoteChange = useCallback(
@@ -166,7 +168,7 @@ export function App() {
     const checkConnection = useCallback(async () => {
         if (note === NoteSyncTarget.Logseq) {
             setLoading(true)
-            const client = new LogseqClient()
+            const client = logseqClient
             const resp = await client.showMsg('Syncwise Connect!')
             const connectStatus = resp.msg === 'success'
             setConnected(connectStatus)
@@ -277,7 +279,6 @@ export function App() {
                 )}
 
                 <Spacer h={2} />
-                {/* <Divider /> */}
 
                 <Button disabled={loading} onClick={checkConnection} placeholder={undefined}>
                     Check {capitalize(note ?? '')} Connection

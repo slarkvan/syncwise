@@ -33,6 +33,7 @@
     "jieba-wasm": "^0.0.2",
     "liquidjs": "^10.10.0",
     "lodash-es": "^4.17.21",
+    "lucide-react": "^0.372.0",
     "marked": "^11.1.0",
     "natural": "^6.7.1",
     "octokit": "^3.1.0",
