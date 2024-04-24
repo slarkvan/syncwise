@@ -12,9 +12,12 @@
 
 - 配置 **Local REST API** 插件。
   ![配置 Obsidian 插件](./docs/obsidian-plugin-config.jpg)
-  如果开启了 Https 配置，需要按照**Local REST API** 插件指引配置证书
+  - 如果开启了 Https 配置，需要按照**Local REST API** 插件指引配置证书
+  - 或者不开启“enable encrypted(https) server”选项
+
 - 在 Syncwise 的配置页面确保 Obsidian 可以通过浏览器插件进行连接。
   ![检查 Obsidian 连接](./docs/obsidian-config.jpg)
+  - 确保 http or https 配置和 Obsidian 的**Local REST API** 插件保持一致
 
 #### Logseq 同步设置
 
