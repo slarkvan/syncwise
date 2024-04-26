@@ -31,6 +31,8 @@
 
 ### 2. 开启 Twitter 笔记同步
 
+- [下载syncwise Chrome 插件](https://chromewebstore.google.com/detail/syncwise/cdndomegjfiajnafdkieddoaanfckfel)
+
 - 在 Twitter 页面上，点击 Syncwise 面板的【开始收集】按钮，并等待页面自动滚动至底部。
   ![开始收集笔记](./docs/syncwise-collect-start.jpg)
 - 最后点击同步到笔记按钮，即可成功同步  
