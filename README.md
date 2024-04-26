@@ -1,9 +1,10 @@
 # Syncwise
 
-## 同步指南
+## 下载插件
 
 - [下载syncwise Chrome 插件](https://chromewebstore.google.com/detail/syncwise/cdndomegjfiajnafdkieddoaanfckfel)
 
+## 同步指南
 
 ### 1. 启用笔记本同步
 
