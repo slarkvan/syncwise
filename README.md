@@ -2,6 +2,9 @@
 
 ## 同步指南
 
+- [下载syncwise Chrome 插件](https://chromewebstore.google.com/detail/syncwise/cdndomegjfiajnafdkieddoaanfckfel)
+
+
 ### 1. 启用笔记本同步
 
 #### Obsidian 同步设置
@@ -30,8 +33,6 @@
   ![检查 Logseq 连接](./docs/check-logseq-connection.jpg)
 
 ### 2. 开启 Twitter 笔记同步
-
-- [下载syncwise Chrome 插件](https://chromewebstore.google.com/detail/syncwise/cdndomegjfiajnafdkieddoaanfckfel)
 
 - 在 Twitter 页面上，点击 Syncwise 面板的【开始收集】按钮，并等待页面自动滚动至底部。
   ![开始收集笔记](./docs/syncwise-collect-start.jpg)
