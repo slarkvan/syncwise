@@ -23,7 +23,7 @@ dist-firefox
 *.njsproj
 *.sln
 *.sw?
-release/
+# release/
 *.pem
 *.crx
 debug/

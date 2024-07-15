@@ -2,7 +2,9 @@
 
 ## 下载插件
 
-- [下载syncwise Chrome 插件](https://chromewebstore.google.com/detail/syncwise/cdndomegjfiajnafdkieddoaanfckfel)
+- ~~[下载syncwise Chrome 插件](https://chromewebstore.google.com/detail/syncwise/cdndomegjfiajnafdkieddoaanfckfel)~~
+
+- 下载 `release/chrome.zip` 
 
 ## 同步指南
 
